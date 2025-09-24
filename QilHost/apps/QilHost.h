@@ -4,4 +4,7 @@
 
 #pragma once
 
+#include "..\include\QilHostFileTd.h"
+#include "..\include\QilHostSecurity.h"
+
 #include <iostream>
