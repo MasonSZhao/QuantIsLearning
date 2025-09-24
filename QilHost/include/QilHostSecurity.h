@@ -177,4 +177,10 @@ namespace TD {
     friend std::ostream& operator<<(std::ostream& os, const IntQuoteDiff& a);
 };
 
+struct IntLimitUpDn {
+    size_t m_idxVecExCode;
+    size_t m_idxVecIntDayBar;
+    int32_t m_count;
+};
+
 }

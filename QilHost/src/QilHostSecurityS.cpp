@@ -14,4 +14,10 @@ std::unordered_map<const char*, size_t, QILHOST::SeqCharHash, QILHOST::SeqCharEq
 std::vector<std::array<char, 19>> VecExCode314::s_vecName;
 std::vector<std::array<char, 10>> VecExCode314::s_vecSpell;
 
+std::vector<std::vector<QILHOST::IntDateBar>> CrossSectorTimeSeries::s_vecVecIntDayBar;
+
+std::vector<int32_t> TimeSeriesCrossSector::s_vecDate;
+
+std::vector<std::vector<QILHOST::IntLimitUpDn>> TimeSeriesCrossSector::s_vecVecIntLimitUp;
+
 }

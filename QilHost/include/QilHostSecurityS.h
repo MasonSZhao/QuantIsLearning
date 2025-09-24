@@ -24,4 +24,13 @@ struct VecExCode314 {
     static std::vector<std::array<char, 10>> s_vecSpell;
 };
 
+struct CrossSectorTimeSeries {
+    static std::vector<std::vector<QILHOST::IntDateBar>> s_vecVecIntDayBar;
+};
+
+struct TimeSeriesCrossSector {
+    static std::vector<int32_t> s_vecDate;
+    static std::vector<std::vector<QILHOST::IntLimitUpDn>> s_vecVecIntLimitUp;
+};
+
 }
