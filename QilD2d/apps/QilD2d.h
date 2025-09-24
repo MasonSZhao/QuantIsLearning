@@ -14,7 +14,14 @@
 #include <dwrite_3.h>
 #pragma comment(lib, "dwrite.lib")
 
+#include "..\..\QilHost\include\QilHostFileTd.h"
+#include "..\..\QilHost\include\QilHostSecurity.h"
+#include "..\..\QilHost\include\QilHostSecurityS.h"
+#include "..\..\QilHost\include\QilHostTech.h"
+
 #include <iostream>
+#include <thread>
+#include <vector>
 
 namespace QILD2D {
 
@@ -57,8 +64,34 @@ struct D2dWndDep {
 
 struct D2dWndDepMain {
     D2dWndDep m_D2dWndDep;
-
+    struct {
+        std::vector<QILHOST::IntMinuteBar> m_vecMinuteBar;
+        int32_t m_preCl;
+        int32_t m_limitUpPr;
+        int32_t m_limitDnPr;
+        int64_t m_volMax;
+    } m_D2dWndDepMinuteBar1999999;
     static LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+};
+
+struct D2dWndDepTimeSharing {
+    struct WMPAINT {
+        D2dWndDep* m_d2dWndDep;
+        int32_t m_preCl;
+        int32_t m_limitUpPr;
+        int32_t m_limitDnPr;
+        int64_t m_volMax;
+        std::vector<QILHOST::IntMinuteBar>* m_vecIntMinuteBar;
+        float m_xStart;
+        float m_yStart;
+        float m_xWidth;
+        float m_yHeight;
+        bool m_hasTop { false };
+        bool m_hasLeft { false };
+        bool m_hasRight { false };
+        bool m_hasBottom { false };
+        void operator()();
+    };
 };
 
 }

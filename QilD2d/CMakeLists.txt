@@ -18,3 +18,4 @@ add_executable (
 	"apps/QilD2d.h"
 )
 
+target_link_libraries(QilD2dExecute PUBLIC QilHostStatic)

@@ -66,8 +66,14 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
     // MENU
     HMENU hMenu = CreateMenu();
+    HMENU hMenuOptions = CreateMenu();
+    AppendMenu(hMenu, MF_POPUP, (UINT)hMenuOptions, TEXT("设置"));
+    {
+    }
     HMENU hMenuHelp = CreateMenu();
     AppendMenu(hMenu, MF_POPUP, (UINT)hMenuHelp, TEXT("帮助(&H)"));
+    {
+    }
 
     // CREATE
     HWND hWnd = CreateWindow(
@@ -146,6 +152,38 @@ LRESULT CALLBACK D2dWndDepMain::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPA
     case WM_CREATE: {
         QILD2D::D2dWndDepMain* ptr = new QILD2D::D2dWndDepMain;
         SetWindowLongPtr(hWnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(ptr));
+        // 后台线程
+        if (true) {
+            std::vector<std::jthread> vecThread;
+            // 后台线程 上证指数分时数据
+            vecThread.emplace_back([&]() {
+                std::vector<QILHOST::IntMinuteBar> des { QILHOST::TD::FileVecMinuteBar::int3264("1999999", 241, true) };
+                {
+                    ptr->m_D2dWndDepMinuteBar1999999.m_vecMinuteBar.reserve(240);
+                    ptr->m_D2dWndDepMinuteBar1999999.m_preCl = des[0].m_cl;
+                    ptr->m_D2dWndDepMinuteBar1999999.m_limitUpPr = des[1].m_cl;
+                    ptr->m_D2dWndDepMinuteBar1999999.m_limitDnPr = des[1].m_cl;
+                    ptr->m_D2dWndDepMinuteBar1999999.m_volMax = des[0].m_vol;
+                    for (auto i { 1 }; i <= 240; ++i) {
+                        ptr->m_D2dWndDepMinuteBar1999999.m_vecMinuteBar.push_back(des[i]);
+                        if (des[i].m_vol > ptr->m_D2dWndDepMinuteBar1999999.m_volMax)
+                            ptr->m_D2dWndDepMinuteBar1999999.m_volMax = des[i].m_vol;
+                        if (des[i].m_cl > ptr->m_D2dWndDepMinuteBar1999999.m_limitUpPr)
+                            ptr->m_D2dWndDepMinuteBar1999999.m_limitUpPr = des[i].m_cl;
+                        if (des[i].m_cl < ptr->m_D2dWndDepMinuteBar1999999.m_limitDnPr)
+                            ptr->m_D2dWndDepMinuteBar1999999.m_limitDnPr = des[i].m_cl;
+                    }
+                    int32_t temp = ptr->m_D2dWndDepMinuteBar1999999.m_limitUpPr - des[0].m_cl;
+                    if ((des[0].m_cl - ptr->m_D2dWndDepMinuteBar1999999.m_limitDnPr) > temp) {
+                        temp = des[0].m_cl - ptr->m_D2dWndDepMinuteBar1999999.m_limitDnPr;
+                    }
+                    temp += 100;
+                    ptr->m_D2dWndDepMinuteBar1999999.m_limitUpPr = ptr->m_D2dWndDepMinuteBar1999999.m_preCl + temp;
+                    ptr->m_D2dWndDepMinuteBar1999999.m_limitDnPr = ptr->m_D2dWndDepMinuteBar1999999.m_preCl - temp;
+                    ptr->m_D2dWndDepMinuteBar1999999.m_volMax += 0.1 * ptr->m_D2dWndDepMinuteBar1999999.m_volMax;
+                }
+            });
+        }
         HRESULT hr = S_OK;
         if (SUCCEEDED(hr)) {
             RECT rc;
@@ -175,35 +213,18 @@ LRESULT CALLBACK D2dWndDepMain::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPA
         ptr->m_D2dWndDep.m_pD2D1HwndRenderTarget->BeginDraw();
         // All painting occurs here, between BeginPaint and EndPaint.
         ptr->m_D2dWndDep.m_pD2D1HwndRenderTarget->Clear(D2D1::ColorF(D2D1::ColorF::White));
-        if (true) {
-            IDWriteTextLayout* pDWriteTextLayoutTemp;
-            {
-                std::wstring temp = L"Quant Is Learning. 量化正在学习。测试永久免费商用字体。";
-                QILD2D::D2dWndIndep::s_pDWriteFactory->CreateTextLayout(temp.c_str(), temp.size(), QILD2D::D2dWndIndep::s_pDWriteTextFormat16, 500 /*width of layout box*/, 100 /*height of layout box*/, &pDWriteTextLayoutTemp);
-            }
-            for (size_t i = 0; i < 25; ++i) {
-                switch (i % 5) {
-                case 0:
-                    ptr->m_D2dWndDep.m_pD2D1HwndRenderTarget->DrawTextLayout(D2D1::Point2F(i * 20, i * 20), pDWriteTextLayoutTemp, ptr->m_D2dWndDep.m_pD2DSolidColorBrushBlack);
-                    break;
-                case 1:
-                    ptr->m_D2dWndDep.m_pD2D1HwndRenderTarget->DrawTextLayout(D2D1::Point2F(i * 20, i * 20), pDWriteTextLayoutTemp, ptr->m_D2dWndDep.m_pD2DSolidColorBrushLightGray);
-                    break;
-                case 2:
-                    ptr->m_D2dWndDep.m_pD2D1HwndRenderTarget->DrawTextLayout(D2D1::Point2F(i * 20, i * 20), pDWriteTextLayoutTemp, ptr->m_D2dWndDep.m_pD2DSolidColorBrushGray);
-                    break;
-                case 3:
-                    ptr->m_D2dWndDep.m_pD2D1HwndRenderTarget->DrawTextLayout(D2D1::Point2F(i * 20, i * 20), pDWriteTextLayoutTemp, ptr->m_D2dWndDep.m_pD2DSolidColorBrushRed);
-                    break;
-                case 4:
-                    ptr->m_D2dWndDep.m_pD2D1HwndRenderTarget->DrawTextLayout(D2D1::Point2F(i * 20, i * 20), pDWriteTextLayoutTemp, ptr->m_D2dWndDep.m_pD2DSolidColorBrushGreen);
-                    break;
-                default:
-                    break;
-                }
-            }
-            pDWriteTextLayoutTemp->Release();
-        }
+        QILD2D::D2dWndDepTimeSharing::WMPAINT op;
+        op.m_preCl = ptr->m_D2dWndDepMinuteBar1999999.m_preCl;
+        op.m_limitUpPr = ptr->m_D2dWndDepMinuteBar1999999.m_limitUpPr;
+        op.m_limitDnPr = ptr->m_D2dWndDepMinuteBar1999999.m_limitDnPr;
+        op.m_volMax = ptr->m_D2dWndDepMinuteBar1999999.m_volMax;
+        op.m_xStart = 0;
+        op.m_yStart = 0;
+        op.m_xWidth = (rc.right - rc.left);
+        op.m_yHeight = (rc.bottom - rc.top);
+        op.m_d2dWndDep = &(ptr->m_D2dWndDep);
+        op.m_vecIntMinuteBar = &(ptr->m_D2dWndDepMinuteBar1999999.m_vecMinuteBar);
+        op.operator()();
         // FillRect(hDC, &ps.rcPaint, //(HBRUSH)GetStockObject(WHITE_BRUSH));
         //     CreateSolidBrush(RGB((rand() % (255 + 1)), (rand() % (255 + 1)), (rand() % (255 + 1)))));
         ptr->m_D2dWndDep.m_pD2D1HwndRenderTarget->EndDraw();
@@ -218,10 +239,105 @@ LRESULT CALLBACK D2dWndDepMain::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPA
         InvalidateRect(hWnd, NULL, FALSE);
         return 0;
     }
+    case WM_COMMAND: {
+        auto hWndCtrl = lParam; // 发送WM_COMMAND的子窗口句柄
+        auto wNotifyCode = HIWORD(wParam); // 菜单消息的通知码为0，加速键消息的通知码为1。
+        auto wID = LOWORD(wParam);
+        switch (wID) {
+        default:
+            break;
+        }
+        return 0;
+    }
     default:
         break;
     }
     return DefWindowProc(hWnd, uMsg, wParam, lParam);
+}
+
+void D2dWndDepTimeSharing::WMPAINT::operator()()
+{
+    float widthLeft = 50;
+    if (!m_hasLeft) {
+        widthLeft = 0;
+    }
+    float widthPrVol = m_xWidth;
+    float widthRight = 50;
+    if (!m_hasRight) {
+        widthRight = 0;
+    }
+    float heightPr = m_yHeight * 0.75;
+    float heightVol = m_yHeight * 0.25;
+    m_d2dWndDep->m_pD2D1HwndRenderTarget->DrawRectangle({ m_xStart + widthLeft + 0 /*left*/, m_yStart + 0 /*top*/, m_xStart + widthLeft + widthPrVol /*right*/, m_yStart + heightPr /*bottom*/ }, m_d2dWndDep->m_pD2DSolidColorBrushGray, 1);
+    m_d2dWndDep->m_pD2D1HwndRenderTarget->DrawRectangle({ m_xStart + widthLeft + 0 /*left*/, m_yStart + heightPr /*top*/, m_xStart + widthLeft + widthPrVol /*right*/, m_yStart + heightPr + heightVol /*bottom*/ }, m_d2dWndDep->m_pD2DSolidColorBrushGray, 1);
+    m_d2dWndDep->m_pD2D1HwndRenderTarget->DrawLine({ m_xStart + widthLeft + 0 /*x*/, m_yStart + heightPr * 0.25f /*y*/ }, { m_xStart + widthLeft + widthPrVol /*x*/, m_yStart + heightPr * 0.25f /*y*/ }, m_d2dWndDep->m_pD2DSolidColorBrushLightGray, 1);
+    m_d2dWndDep->m_pD2D1HwndRenderTarget->DrawLine({ m_xStart + widthLeft + 0 /*x*/, m_yStart + heightPr * 0.5f /*y*/ }, { m_xStart + widthLeft + widthPrVol /*x*/, m_yStart + heightPr * 0.5f /*y*/ }, m_d2dWndDep->m_pD2DSolidColorBrushLightGray, 1);
+    m_d2dWndDep->m_pD2D1HwndRenderTarget->DrawLine({ m_xStart + widthLeft + 0 /*x*/, m_yStart + heightPr * 0.75f /*y*/ }, { m_xStart + widthLeft + widthPrVol /*x*/, m_yStart + heightPr * 0.75f /*y*/ }, m_d2dWndDep->m_pD2DSolidColorBrushLightGray, 1);
+    m_d2dWndDep->m_pD2D1HwndRenderTarget->DrawLine({ m_xStart + widthLeft + widthPrVol * 0.5f /*x*/, m_yStart + 0 /*y*/ }, { m_xStart + widthLeft + widthPrVol * 0.5f /*x*/, m_yStart + heightPr + heightVol /*y*/ }, m_d2dWndDep->m_pD2DSolidColorBrushLightGray, 1);
+    m_d2dWndDep->m_pD2D1HwndRenderTarget->DrawLine({ m_xStart + widthLeft + widthPrVol * 0.25f /*x*/, m_yStart + 0 /*y*/ }, { m_xStart + widthLeft + widthPrVol * 0.25f /*x*/, m_yStart + heightPr + heightVol /*y*/ }, m_d2dWndDep->m_pD2DSolidColorBrushLightGray, 1);
+    m_d2dWndDep->m_pD2D1HwndRenderTarget->DrawLine({ m_xStart + widthLeft + widthPrVol * 0.75f /*x*/, m_yStart + 0 /*y*/ }, { m_xStart + widthLeft + widthPrVol * 0.75f /*x*/, m_yStart + heightPr + heightVol /*y*/ }, m_d2dWndDep->m_pD2DSolidColorBrushLightGray, 1);
+    if (true) {
+        int32_t limitUpDnPr = m_limitUpPr - m_limitDnPr;
+        {
+            D2D1_POINT_2F p0 = { m_xStart + widthLeft, m_yStart + ((float)(m_limitUpPr - (*m_vecIntMinuteBar)[0].m_op) / (float)limitUpDnPr) * heightPr };
+            D2D1_POINT_2F p1 = { m_xStart + widthLeft + widthPrVol / 240.f, m_yStart + ((float)(m_limitUpPr - (*m_vecIntMinuteBar)[0].m_cl) / (float)limitUpDnPr) * heightPr };
+            m_d2dWndDep->m_pD2D1HwndRenderTarget->DrawLine(p0, p1, m_d2dWndDep->m_pD2DSolidColorBrushBlack, 1);
+            for (size_t i { 1 }; i <= 239; ++i) {
+                p0 = p1;
+                p1.x += widthPrVol / 240.f;
+                p1.y = m_yStart + ((float)(m_limitUpPr - (*m_vecIntMinuteBar)[i].m_cl) / (float)limitUpDnPr) * heightPr;
+                m_d2dWndDep->m_pD2D1HwndRenderTarget->DrawLine(p0, p1, m_d2dWndDep->m_pD2DSolidColorBrushBlack, 1);
+            }
+        }
+    }
+    if (true) {
+        D2D1_POINT_2F p0 = { m_xStart + widthLeft, m_yStart + heightPr + (1 - ((float)(*m_vecIntMinuteBar)[0].m_vol) / (float)m_volMax) * heightVol };
+        D2D1_POINT_2F p1 = { m_xStart + widthLeft, m_yStart + heightPr + heightVol };
+        m_d2dWndDep->m_pD2D1HwndRenderTarget->DrawLine(p0, p1, m_d2dWndDep->m_pD2DSolidColorBrushBlack, 1);
+        for (size_t i { 1 }; i <= 239; ++i) {
+            p0.x += widthPrVol / 240.f;
+            p1.x += widthPrVol / 240.f;
+            p0.y = m_yStart + heightPr + (1 - ((float)(*m_vecIntMinuteBar)[i].m_vol) / (float)m_volMax) * heightVol;
+            m_d2dWndDep->m_pD2D1HwndRenderTarget->DrawLine(p0, p1, m_d2dWndDep->m_pD2DSolidColorBrushBlack, 1);
+        }
+    }
+    if (false) {
+        IDWriteTextLayout* pDWriteTextLayout0930;
+        {
+            std::wstring temp = L"09:30";
+            QILD2D::D2dWndIndep::s_pDWriteFactory->CreateTextLayout(temp.c_str(), temp.size(), QILD2D::D2dWndIndep::s_pDWriteTextFormat14, 200 /*width of layout box*/, 100 /*height of layout box*/, &pDWriteTextLayout0930);
+        }
+        IDWriteTextLayout* pDWriteTextLayout1030;
+        {
+            std::wstring temp = L"10:30";
+            QILD2D::D2dWndIndep::s_pDWriteFactory->CreateTextLayout(temp.c_str(), temp.size(), QILD2D::D2dWndIndep::s_pDWriteTextFormat14, 200 /*width of layout box*/, 100 /*height of layout box*/, &pDWriteTextLayout1030);
+        }
+        IDWriteTextLayout* pDWriteTextLayout1300;
+        {
+            std::wstring temp = L"13:00";
+            QILD2D::D2dWndIndep::s_pDWriteFactory->CreateTextLayout(temp.c_str(), temp.size(), QILD2D::D2dWndIndep::s_pDWriteTextFormat14, 200 /*width of layout box*/, 100 /*height of layout box*/, &pDWriteTextLayout1300);
+        }
+        IDWriteTextLayout* pDWriteTextLayout1400;
+        {
+            std::wstring temp = L"14:00";
+            QILD2D::D2dWndIndep::s_pDWriteFactory->CreateTextLayout(temp.c_str(), temp.size(), QILD2D::D2dWndIndep::s_pDWriteTextFormat14, 200 /*width of layout box*/, 100 /*height of layout box*/, &pDWriteTextLayout1400);
+        }
+        IDWriteTextLayout* pDWriteTextLayout1500;
+        {
+            std::wstring temp = L"15:00";
+            QILD2D::D2dWndIndep::s_pDWriteFactory->CreateTextLayout(temp.c_str(), temp.size(), QILD2D::D2dWndIndep::s_pDWriteTextFormat14, 200 /*width of layout box*/, 100 /*height of layout box*/, &pDWriteTextLayout1500);
+        }
+        m_d2dWndDep->m_pD2D1HwndRenderTarget->DrawTextLayout(D2D1::Point2F(m_xStart + widthLeft + 0, m_yStart + heightPr + heightVol), pDWriteTextLayout0930, m_d2dWndDep->m_pD2DSolidColorBrushBlack);
+        pDWriteTextLayout0930->Release();
+        m_d2dWndDep->m_pD2D1HwndRenderTarget->DrawTextLayout(D2D1::Point2F(m_xStart + widthLeft + widthPrVol * 0.25, m_yStart + heightPr + heightVol), pDWriteTextLayout1030, m_d2dWndDep->m_pD2DSolidColorBrushBlack);
+        pDWriteTextLayout1030->Release();
+        m_d2dWndDep->m_pD2D1HwndRenderTarget->DrawTextLayout(D2D1::Point2F(m_xStart + widthLeft + widthPrVol / 2, m_yStart + heightPr + heightVol), pDWriteTextLayout1300, m_d2dWndDep->m_pD2DSolidColorBrushBlack);
+        pDWriteTextLayout1300->Release();
+        m_d2dWndDep->m_pD2D1HwndRenderTarget->DrawTextLayout(D2D1::Point2F(m_xStart + widthLeft + widthPrVol * 0.75, m_yStart + heightPr + heightVol), pDWriteTextLayout1400, m_d2dWndDep->m_pD2DSolidColorBrushBlack);
+        pDWriteTextLayout1400->Release();
+        m_d2dWndDep->m_pD2D1HwndRenderTarget->DrawTextLayout(D2D1::Point2F(m_xStart + widthLeft + widthPrVol, m_yStart + heightPr + heightVol), pDWriteTextLayout1500, m_d2dWndDep->m_pD2DSolidColorBrushBlack);
+        pDWriteTextLayout1500->Release();
+    }
 }
 
 }
