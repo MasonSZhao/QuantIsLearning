@@ -39,3 +39,13 @@ target_link_libraries(TestQilHostSecurity PUBLIC QilHostStatic)
 
 # Catch2 helper function that registers each Catch2 TEST_CASE as a single CTest test, which is then run in a separate process. 
 catch_discover_tests(TestQilHostSecurity)
+
+# Define the target
+add_executable(TestQilHostTech "TestQilHostTech.cpp")
+
+# Specify that the target uses the Catch2 library and needs this library to provide a main function for running test cases.
+target_link_libraries(TestQilHostTech PRIVATE Catch2::Catch2WithMain)
+target_link_libraries(TestQilHostTech PUBLIC QilHostStatic)
+
+# Catch2 helper function that registers each Catch2 TEST_CASE as a single CTest test, which is then run in a separate process. 
+catch_discover_tests(TestQilHostTech)

@@ -7,5 +7,6 @@
 #include "..\include\QilHostFileTd.h"
 #include "..\include\QilHostSecurity.h"
 #include "..\include\QilHostSecurityS.h"
+#include "..\include\QilHostTech.h"
 
 #include <iostream>
