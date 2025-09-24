@@ -2,6 +2,7 @@
 
 #include "..\include\QilHostFileTd.h"
 
+#include "..\include\QilHostSecurityS.h"
 #include <fstream>
 
 namespace QILHOST {
@@ -170,6 +171,327 @@ namespace TD {
             vecIntMinuteBar.push_back(temp);
         }
         return vecIntMinuteBar;
+    }
+
+    std::string FileVecExCode360::s_filePathSz { "C:/new_tdx/T0002/hq_cache/szs.tnf" };
+
+    std::string FileVecExCode360::s_filePathSh { "C:/new_tdx/T0002/hq_cache/shs.tnf" };
+
+    std::string FileVecExCode360::s_filePathBj { "C:/new_tdx/T0002/hq_cache/bjs.tnf" };
+
+    void FileVecExCode360::sz(const bool sz00, const bool sz30)
+    {
+        std::vector<std::array<char, 8>> vecExCode;
+        std::vector<std::array<char, 9>> vecName;
+        std::vector<std::array<char, 5>> vecSpell;
+        std::ifstream ifs(QILHOST::TD::FileVecExCode360::s_filePathSz, std::ifstream::in | std::ifstream::binary);
+        if (ifs.is_open()) {
+            ifs.ignore(50);
+            while (!ifs.eof()) {
+                char buf[360];
+                ifs.read(&buf[0], 360);
+                bool isExCode { false };
+                if (true == sz00) // QUOTE THIE LINE WHEN RUN BY CODE
+                    if (('0' == buf[0]) && ('0' == buf[1])) {
+                        isExCode = true;
+                    }
+                if (true == sz30) // QUOTE THIE LINE WHEN RUN BY CODE
+                    if (('3' == buf[0]) && ('0' == buf[1])) {
+                        isExCode = true;
+                    }
+                if (true == isExCode) {
+                    std::array<char, 8> exCode {};
+                    memcpy(&exCode[1], &buf[0], 6);
+                    exCode[0] = '0';
+                    exCode[7] = '\0';
+                    std::array<char, 9> name {};
+                    memcpy(name.data(), &buf[31], 8);
+                    name[8] = '\0';
+                    // std::string name(&buf[31], 9);
+                    std::array<char, 5> spell {};
+                    memcpy(spell.data(), &buf[329], 4);
+                    spell[4] = '\0';
+                    // std::string spell(&buf[329], 5);
+                    // std::cout << exCode.data() << " " << name.data() << " " << spell.data() << "      ";
+                    vecExCode.emplace_back(exCode);
+                    vecName.emplace_back(name);
+                    vecSpell.emplace_back(spell);
+                }
+            }
+        } else {
+            std::cerr << "Failed to open file: " << QILHOST::TD::FileVecExCode360::s_filePathSz << std::endl;
+        }
+        ifs.close();
+        if (QILHOST::VecExCode360::s_vecExCode.empty()) {
+            QILHOST::VecExCode360::s_vecExCode.swap(vecExCode);
+            QILHOST::VecExCode360::s_vecName.swap(vecName);
+            QILHOST::VecExCode360::s_vecSpell.swap(vecSpell);
+        } else {
+            QILHOST::VecExCode360::s_vecExCode.insert(QILHOST::VecExCode360::s_vecExCode.end(), vecExCode.begin(), vecExCode.end());
+            QILHOST::VecExCode360::s_vecName.insert(QILHOST::VecExCode360::s_vecName.end(), vecName.begin(), vecName.end());
+            QILHOST::VecExCode360::s_vecSpell.insert(QILHOST::VecExCode360::s_vecSpell.end(), vecSpell.begin(), vecSpell.end());
+        }
+    }
+
+    void FileVecExCode360::sh(const bool sh60, const bool sh68)
+    {
+        std::vector<std::array<char, 8>> vecExCode;
+        std::vector<std::array<char, 9>> vecName;
+        std::vector<std::array<char, 5>> vecSpell;
+        std::ifstream ifs(QILHOST::TD::FileVecExCode360::s_filePathSh, std::ifstream::in | std::ifstream::binary);
+        if (ifs.is_open()) {
+            ifs.ignore(50);
+            while (!ifs.eof()) {
+                char buf[360];
+                ifs.read(&buf[0], 360);
+                bool isExCode { false };
+                if (true == sh60) // QUOTE THIE LINE WHEN RUN BY CODE
+                    if (('6' == buf[0]) && ('0' == buf[1])) {
+                        isExCode = true;
+                    }
+                if (true == sh68) // QUOTE THIE LINE WHEN RUN BY CODE
+                    if (('6' == buf[0]) && ('8' == buf[1])) {
+                        isExCode = true;
+                    }
+                if (true == isExCode) {
+                    std::array<char, 8> exCode {};
+                    memcpy(&exCode[1], &buf[0], 6);
+                    exCode[0] = '1';
+                    exCode[7] = '\0';
+                    std::array<char, 9> name {};
+                    memcpy(name.data(), &buf[31], 8);
+                    name[8] = '\0';
+                    // std::string name(&buf[31], 9);
+                    std::array<char, 5> spell {};
+                    memcpy(spell.data(), &buf[329], 4);
+                    spell[4] = '\0';
+                    // std::string spell(&buf[329], 5);
+                    // std::cout << exCode.data() << " " << name.data() << " " << spell.data() << "      ";
+                    vecExCode.emplace_back(exCode);
+                    vecName.emplace_back(name);
+                    vecSpell.emplace_back(spell);
+                }
+            }
+        } else {
+            std::cerr << "Failed to open file: " << QILHOST::TD::FileVecExCode360::s_filePathSh << std::endl;
+        }
+        ifs.close();
+        if (QILHOST::VecExCode360::s_vecExCode.empty()) {
+            QILHOST::VecExCode360::s_vecExCode.swap(vecExCode);
+            QILHOST::VecExCode360::s_vecName.swap(vecName);
+            QILHOST::VecExCode360::s_vecSpell.swap(vecSpell);
+        } else {
+            QILHOST::VecExCode360::s_vecExCode.insert(QILHOST::VecExCode360::s_vecExCode.end(), vecExCode.begin(), vecExCode.end());
+            QILHOST::VecExCode360::s_vecName.insert(QILHOST::VecExCode360::s_vecName.end(), vecName.begin(), vecName.end());
+            QILHOST::VecExCode360::s_vecSpell.insert(QILHOST::VecExCode360::s_vecSpell.end(), vecSpell.begin(), vecSpell.end());
+        }
+    }
+
+    void FileVecExCode360::bj()
+    {
+        std::vector<std::array<char, 8>> vecExCode;
+        std::vector<std::array<char, 9>> vecName;
+        std::vector<std::array<char, 5>> vecSpell;
+        std::ifstream ifs(QILHOST::TD::FileVecExCode360::s_filePathBj, std::ifstream::in | std::ifstream::binary);
+        if (ifs.is_open()) {
+            ifs.ignore(50);
+            while (!ifs.eof()) {
+                char buf[360];
+                ifs.read(&buf[0], 360);
+                bool isExCode { false };
+                if (('4' == buf[0]) && ('3' == buf[1])) {
+                    isExCode = true;
+                } else if (('8' == buf[0]) && ('3' == buf[1])) {
+                    isExCode = true;
+                } else if (('8' == buf[0]) && ('7' == buf[1])) {
+                    isExCode = true;
+                }
+                if (true == isExCode) {
+                    std::array<char, 8> exCode {};
+                    memcpy(&exCode[1], &buf[0], 6);
+                    exCode[0] = '2';
+                    exCode[7] = '\0';
+                    std::array<char, 9> name {};
+                    memcpy(name.data(), &buf[31], 8);
+                    name[8] = '\0';
+                    // std::string name(&buf[31], 9);
+                    std::array<char, 5> spell {};
+                    memcpy(spell.data(), &buf[329], 4);
+                    spell[4] = '\0';
+                    // std::string spell(&buf[329], 5);
+                    // std::cout << exCode.data() << " " << name.data() << " " << spell.data() << "      ";
+                    vecExCode.emplace_back(exCode);
+                    vecName.emplace_back(name);
+                    vecSpell.emplace_back(spell);
+                }
+            }
+        } else {
+            std::cerr << "Failed to open file: " << QILHOST::TD::FileVecExCode360::s_filePathBj << std::endl;
+        }
+        ifs.close();
+        if (QILHOST::VecExCode360::s_vecExCode.empty()) {
+            QILHOST::VecExCode360::s_vecExCode.swap(vecExCode);
+            QILHOST::VecExCode360::s_vecName.swap(vecName);
+            QILHOST::VecExCode360::s_vecSpell.swap(vecSpell);
+        } else {
+            QILHOST::VecExCode360::s_vecExCode.insert(QILHOST::VecExCode360::s_vecExCode.end(), vecExCode.begin(), vecExCode.end());
+            QILHOST::VecExCode360::s_vecName.insert(QILHOST::VecExCode360::s_vecName.end(), vecName.begin(), vecName.end());
+            QILHOST::VecExCode360::s_vecSpell.insert(QILHOST::VecExCode360::s_vecSpell.end(), vecSpell.begin(), vecSpell.end());
+        }
+    }
+
+    std::string FileVecExCode314::s_filePathSz { "C:/new_tdx/T0002/hq_cache/szm.tnf" };
+
+    std::string FileVecExCode314::s_filePathSh { "C:/new_tdx/T0002/hq_cache/shm.tnf" };
+
+    std::string FileVecExCode314::s_filePathBj { "C:/new_tdx/T0002/hq_cache/bjm.tnf" };
+
+    void FileVecExCode314::sz(const bool sz00, const bool sz30)
+    {
+        std::vector<std::array<char, 8>> vecExCode;
+        std::vector<std::array<char, 19>> vecName;
+        std::vector<std::array<char, 10>> vecSpell;
+        std::ifstream ifs(QILHOST::TD::FileVecExCode314::s_filePathSz, std::ifstream::in | std::ifstream::binary);
+        if (ifs.is_open()) {
+            ifs.ignore(50);
+            while (!ifs.eof()) {
+                char buf[314];
+                ifs.read(&buf[0], 314);
+                bool isExCode { false };
+                if (true == sz00) // QUOTE THIE LINE WHEN RUN BY CODE
+                    if (('0' == buf[0]) && ('0' == buf[1])) {
+                        isExCode = true;
+                    }
+                if (true == sz30) // QUOTE THIE LINE WHEN RUN BY CODE
+                    if (('3' == buf[0]) && ('0' == buf[1])) {
+                        isExCode = true;
+                    }
+                if (true == isExCode) {
+                    std::array<char, 8> exCode {};
+                    memcpy(&exCode[1], &buf[0], 6);
+                    exCode[0] = '0';
+                    exCode[7] = '\0';
+                    std::array<char, 19> name {};
+                    memcpy(name.data(), &buf[23], 18);
+                    std::array<char, 10> spell {};
+                    memcpy(spell.data(), &buf[285], 9);
+                    vecExCode.emplace_back(exCode);
+                    vecName.emplace_back(name);
+                    vecSpell.emplace_back(spell);
+                }
+            }
+        } else {
+            std::cerr << "Failed to open file: " << QILHOST::TD::FileVecExCode314::s_filePathSz << std::endl;
+        }
+        ifs.close();
+        if (QILHOST::VecExCode314::s_vecExCode.empty()) {
+            QILHOST::VecExCode314::s_vecExCode.swap(vecExCode);
+            QILHOST::VecExCode314::s_vecName.swap(vecName);
+            QILHOST::VecExCode314::s_vecSpell.swap(vecSpell);
+        } else {
+            QILHOST::VecExCode314::s_vecExCode.insert(QILHOST::VecExCode314::s_vecExCode.end(), vecExCode.begin(), vecExCode.end());
+            QILHOST::VecExCode314::s_vecName.insert(QILHOST::VecExCode314::s_vecName.end(), vecName.begin(), vecName.end());
+            QILHOST::VecExCode314::s_vecSpell.insert(QILHOST::VecExCode314::s_vecSpell.end(), vecSpell.begin(), vecSpell.end());
+        }
+    }
+
+    void FileVecExCode314::sh(const bool sh60, const bool sh68)
+    {
+        std::vector<std::array<char, 8>> vecExCode;
+        std::vector<std::array<char, 19>> vecName;
+        std::vector<std::array<char, 10>> vecSpell;
+        std::ifstream ifs(QILHOST::TD::FileVecExCode314::s_filePathSh, std::ifstream::in | std::ifstream::binary);
+        if (ifs.is_open()) {
+            ifs.ignore(50);
+            while (!ifs.eof()) {
+                char buf[314];
+                ifs.read(&buf[0], 314);
+                bool isExCode { false };
+                if (true == sh60) // QUOTE THIE LINE WHEN RUN BY CODE
+                    if (('6' == buf[0]) && ('0' == buf[1])) {
+                        isExCode = true;
+                    }
+                if (true == sh68) // QUOTE THIE LINE WHEN RUN BY CODE
+                    if (('6' == buf[0]) && ('8' == buf[1])) {
+                        isExCode = true;
+                    }
+                if (true == isExCode) {
+                    std::array<char, 8> exCode {};
+                    memcpy(&exCode[1], &buf[0], 6);
+                    exCode[0] = '1';
+                    exCode[7] = '\0';
+                    std::array<char, 19> name {};
+                    memcpy(name.data(), &buf[23], 18);
+                    std::array<char, 10> spell {};
+                    memcpy(spell.data(), &buf[285], 9);
+                    vecExCode.emplace_back(exCode);
+                    vecName.emplace_back(name);
+                    vecSpell.emplace_back(spell);
+                }
+            }
+        } else {
+            std::cerr << "Failed to open file: " << QILHOST::TD::FileVecExCode314::s_filePathSh << std::endl;
+        }
+        ifs.close();
+
+        if (QILHOST::VecExCode314::s_vecExCode.empty()) {
+            QILHOST::VecExCode314::s_vecExCode.swap(vecExCode);
+            QILHOST::VecExCode314::s_vecName.swap(vecName);
+            QILHOST::VecExCode314::s_vecSpell.swap(vecSpell);
+        } else {
+            QILHOST::VecExCode314::s_vecExCode.insert(QILHOST::VecExCode314::s_vecExCode.end(), vecExCode.begin(), vecExCode.end());
+            QILHOST::VecExCode314::s_vecName.insert(QILHOST::VecExCode314::s_vecName.end(), vecName.begin(), vecName.end());
+            QILHOST::VecExCode314::s_vecSpell.insert(QILHOST::VecExCode314::s_vecSpell.end(), vecSpell.begin(), vecSpell.end());
+        }
+    }
+
+    void FileVecExCode314::bj()
+    {
+        std::vector<std::array<char, 8>> vecExCode;
+        std::vector<std::array<char, 19>> vecName;
+        std::vector<std::array<char, 10>> vecSpell;
+        std::ifstream ifs(QILHOST::TD::FileVecExCode314::s_filePathBj, std::ifstream::in | std::ifstream::binary);
+        if (ifs.is_open()) {
+            ifs.ignore(50);
+            while (!ifs.eof()) {
+                char buf[314];
+                ifs.read(&buf[0], 314);
+                bool isExCode { false };
+                if (('4' == buf[0]) && ('3' == buf[1])) {
+                    isExCode = true;
+                } else if (('8' == buf[0]) && ('3' == buf[1])) {
+                    isExCode = true;
+                } else if (('8' == buf[0]) && ('7' == buf[1])) {
+                    isExCode = true;
+                }
+                if (true == isExCode) {
+                    std::array<char, 8> exCode {};
+                    memcpy(&exCode[1], &buf[0], 6);
+                    exCode[0] = '2';
+                    exCode[7] = '\0';
+                    std::array<char, 19> name {};
+                    memcpy(name.data(), &buf[23], 18);
+                    std::array<char, 10> spell {};
+                    memcpy(spell.data(), &buf[285], 9);
+                    vecExCode.emplace_back(exCode);
+                    vecName.emplace_back(name);
+                    vecSpell.emplace_back(spell);
+                }
+            }
+        } else {
+            std::cerr << "Failed to open file: " << QILHOST::TD::FileVecExCode314::s_filePathBj << std::endl;
+        }
+        ifs.close();
+
+        if (QILHOST::VecExCode314::s_vecExCode.empty()) {
+            QILHOST::VecExCode314::s_vecExCode.swap(vecExCode);
+            QILHOST::VecExCode314::s_vecName.swap(vecName);
+            QILHOST::VecExCode314::s_vecSpell.swap(vecSpell);
+        } else {
+            QILHOST::VecExCode314::s_vecExCode.insert(QILHOST::VecExCode314::s_vecExCode.end(), vecExCode.begin(), vecExCode.end());
+            QILHOST::VecExCode314::s_vecName.insert(QILHOST::VecExCode314::s_vecName.end(), vecName.begin(), vecName.end());
+            QILHOST::VecExCode314::s_vecSpell.insert(QILHOST::VecExCode314::s_vecSpell.end(), vecSpell.begin(), vecSpell.end());
+        }
     }
 
 }

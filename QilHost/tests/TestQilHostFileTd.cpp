@@ -2,6 +2,7 @@
 
 #include "..\include\QilHostFileTd.h"
 #include "..\include\QilHostSecurity.h"
+#include "..\include\QilHostSecurityS.h"
 
 #include <iostream>
 
@@ -64,6 +65,72 @@ SCENARIO("Seq Read MinuteFile", "[Seq Read MinuteFile]")
                         std::cout << vecIntMinuteBar[i] << std::endl;
                 }
                 CHECK(vecIntMinuteBar.size() == 20);
+            }
+        }
+    }
+}
+
+SCENARIO("Seq Read FileVecExCodeSz", "[Seq Read FileVecExCodeSz]")
+{
+    GIVEN("File360")
+    {
+        if (true) {
+            QILHOST::TD::FileVecExCode360::sz(true, true);
+            for (size_t i { 0 }; i < 5; ++i) {
+                std::cout << QILHOST::VecExCode360::s_vecExCode[i].data() << '\t' << QILHOST::VecExCode360::s_vecName[i].data() << '\t' << QILHOST::VecExCode360::s_vecSpell[i].data() << std::endl;
+            }
+        }
+    }
+    GIVEN("File314")
+    {
+        if (true) {
+            QILHOST::TD::FileVecExCode314::sz(true, true);
+            for (size_t i { 0 }; i < 5; ++i) {
+                std::cout << QILHOST::VecExCode314::s_vecExCode[i].data() << '\t' << QILHOST::VecExCode314::s_vecName[i].data() << '\t' << QILHOST::VecExCode314::s_vecSpell[i].data() << std::endl;
+            }
+        }
+    }
+}
+
+SCENARIO("Seq Read FileVecExCodeSh", "[Seq Read FileVecExCodeSh]")
+{
+    GIVEN("File360")
+    {
+        if (true) {
+            QILHOST::TD::FileVecExCode360::sh(true, true);
+            for (size_t i { 0 }; i < 5; ++i) {
+                std::cout << QILHOST::VecExCode360::s_vecExCode[i].data() << '\t' << QILHOST::VecExCode360::s_vecName[i].data() << '\t' << QILHOST::VecExCode360::s_vecSpell[i].data() << std::endl;
+            }
+        }
+    }
+    GIVEN("File314")
+    {
+        if (true) {
+            QILHOST::TD::FileVecExCode314::sh(true, true);
+            for (size_t i { 0 }; i < 5; ++i) {
+                std::cout << QILHOST::VecExCode314::s_vecExCode[i].data() << '\t' << QILHOST::VecExCode314::s_vecName[i].data() << '\t' << QILHOST::VecExCode314::s_vecSpell[i].data() << std::endl;
+            }
+        }
+    }
+}
+
+SCENARIO("Seq Read FileVecExCodeBj", "[Seq Read FileVecExCodeBj]")
+{
+    GIVEN("File360")
+    {
+        if (true) {
+            QILHOST::TD::FileVecExCode360::bj();
+            for (size_t i { 0 }; i < 5; ++i) {
+                std::cout << QILHOST::VecExCode360::s_vecExCode[i].data() << '\t' << QILHOST::VecExCode360::s_vecName[i].data() << '\t' << QILHOST::VecExCode360::s_vecSpell[i].data() << std::endl;
+            }
+        }
+    }
+    GIVEN("File314")
+    {
+        if (true) {
+            QILHOST::TD::FileVecExCode314::bj();
+            for (size_t i { 0 }; i < 5; ++i) {
+                std::cout << QILHOST::VecExCode314::s_vecExCode[i].data() << '\t' << QILHOST::VecExCode314::s_vecName[i].data() << '\t' << QILHOST::VecExCode314::s_vecSpell[i].data() << std::endl;
             }
         }
     }
