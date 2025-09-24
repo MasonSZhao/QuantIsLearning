@@ -1,0 +1,8 @@
+﻿# Visual Studio 
+.vs/
+
+# VS Code
+.vscode/
+
+# Build Folder
+out/
