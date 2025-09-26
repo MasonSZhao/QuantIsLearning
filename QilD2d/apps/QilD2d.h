@@ -32,6 +32,9 @@ struct D2dWndIndep {
     static IDWriteTextFormat* s_pDWriteTextFormat16;
     static IDWriteTextFormat* s_pDWriteTextFormat14;
 
+    static float s_lineHeight16;
+    static float s_lineHeight14;
+
     // Font
     static IDWriteFontCollection1* s_pDWriteFontCollection;
     static IDWriteFontSetBuilder2* s_pDWriteFontSetBuilder;
@@ -94,4 +97,17 @@ struct D2dWndDepTimeSharing {
     };
 };
 
+struct D2dWndDepLimitPeriodText {
+    std::vector<std::wstring> m_vecLine;
+    float m_maxWidthVecPDWriteTextLayout = 0.f;
+    std::vector<IDWriteTextLayout*> m_vecPDWriteTextLayout;
+
+    D2dWndDep m_D2dWndDep;
+    static LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+};
+
 }
+
+#define WNDMAIN_HMENU_FEATURE_LIMITPERIOD300 (WM_USER + 1)
+#define WNDMAIN_HMENU_FEATURE_LIMITPERIOD688 (WM_USER + 2)
+#define WNDMAIN_HMENU_FEATURE_LIMITPERIODBJ (WM_USER + 3)
