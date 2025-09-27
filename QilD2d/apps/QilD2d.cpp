@@ -12,6 +12,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     UNREFERENCED_PARAMETER(hPrevInstance);
     UNREFERENCED_PARAMETER(lpCmdLine);
 
+    SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
+
     // Use HeapSetInformation to specify that the process should terminate if the heap manager detects an error in any heap used by the process.
     HeapSetInformation(NULL, HeapEnableTerminationOnCorruption, NULL, 0);
 
@@ -109,9 +111,9 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     HMENU hMenuFeature = CreateMenu();
     AppendMenu(hMenu, MF_POPUP, (UINT)hMenuFeature, TEXT("功能"));
     {
-        AppendMenu(hMenuFeature, MF_STRING, WNDMAIN_HMENU_FEATURE_LIMITPERIOD300, "创业板周期");
-        AppendMenu(hMenuFeature, MF_STRING, WNDMAIN_HMENU_FEATURE_LIMITPERIOD688, "科创板周期");
-        AppendMenu(hMenuFeature, MF_STRING, WNDMAIN_HMENU_FEATURE_LIMITPERIODBJ, "北交所周期");
+        AppendMenu(hMenuFeature, MF_STRING, WNDMAIN_HMENU_FEATURE_LIMITPERIOD300, TEXT("创业板周期"));
+        AppendMenu(hMenuFeature, MF_STRING, WNDMAIN_HMENU_FEATURE_LIMITPERIOD688, TEXT("科创板周期"));
+        AppendMenu(hMenuFeature, MF_STRING, WNDMAIN_HMENU_FEATURE_LIMITPERIODBJ, TEXT("北交所周期"));
     }
     HMENU hMenuOptions = CreateMenu();
     AppendMenu(hMenu, MF_POPUP, (UINT)hMenuOptions, TEXT("设置"));
@@ -296,8 +298,8 @@ LRESULT CALLBACK D2dWndDepMain::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPA
         switch (wID) {
         case WNDMAIN_HMENU_FEATURE_LIMITPERIOD300: {
             HWND hWndLimitPeriodText = CreateWindow(
-                "WndLimitPeriodText", // 窗口类注册名称
-                "创业板周期", // 窗口标题
+                TEXT("WndLimitPeriodText"), // 窗口类注册名称
+                TEXT("创业板周期"), // 窗口标题
                 WS_VISIBLE | WS_OVERLAPPEDWINDOW, // 标准交互
                 CW_USEDEFAULT, // 初始x坐标
                 CW_USEDEFAULT, // 初始y坐标
@@ -372,27 +374,32 @@ void D2dWndDepTimeSharing::WMPAINT::operator()()
         IDWriteTextLayout* pDWriteTextLayout0930;
         {
             std::wstring temp = L"09:30";
-            QILD2D::D2dWndIndep::s_pDWriteFactory->CreateTextLayout(temp.c_str(), temp.size(), QILD2D::D2dWndIndep::s_pDWriteTextFormat14, 200 /*width of layout box*/, 100 /*height of layout box*/, &pDWriteTextLayout0930);
+            QILD2D::D2dWndIndep::s_pDWriteFactory->CreateTextLayout(temp.c_str(), temp.size(), QILD2D::D2dWndIndep::s_pDWriteTextFormat14, 0 /*可使用renderTargetSize*/, 0 /*可使用renderTargetSize*/, &pDWriteTextLayout0930);
+            pDWriteTextLayout0930->SetWordWrapping(DWRITE_WORD_WRAPPING_NO_WRAP); // Set the word wrapping mode to DWRITE_WORD_WRAPPING_NO_WRAP
         }
         IDWriteTextLayout* pDWriteTextLayout1030;
         {
             std::wstring temp = L"10:30";
-            QILD2D::D2dWndIndep::s_pDWriteFactory->CreateTextLayout(temp.c_str(), temp.size(), QILD2D::D2dWndIndep::s_pDWriteTextFormat14, 200 /*width of layout box*/, 100 /*height of layout box*/, &pDWriteTextLayout1030);
+            QILD2D::D2dWndIndep::s_pDWriteFactory->CreateTextLayout(temp.c_str(), temp.size(), QILD2D::D2dWndIndep::s_pDWriteTextFormat14, 0 /*可使用renderTargetSize*/, 0 /*可使用renderTargetSize*/, &pDWriteTextLayout1030);
+            pDWriteTextLayout1030->SetWordWrapping(DWRITE_WORD_WRAPPING_NO_WRAP); // Set the word wrapping mode to DWRITE_WORD_WRAPPING_NO_WRAP
         }
         IDWriteTextLayout* pDWriteTextLayout1300;
         {
             std::wstring temp = L"13:00";
-            QILD2D::D2dWndIndep::s_pDWriteFactory->CreateTextLayout(temp.c_str(), temp.size(), QILD2D::D2dWndIndep::s_pDWriteTextFormat14, 200 /*width of layout box*/, 100 /*height of layout box*/, &pDWriteTextLayout1300);
+            QILD2D::D2dWndIndep::s_pDWriteFactory->CreateTextLayout(temp.c_str(), temp.size(), QILD2D::D2dWndIndep::s_pDWriteTextFormat14, 0 /*可使用renderTargetSize*/, 0 /*可使用renderTargetSize*/, &pDWriteTextLayout1300);
+            pDWriteTextLayout1300->SetWordWrapping(DWRITE_WORD_WRAPPING_NO_WRAP); // Set the word wrapping mode to DWRITE_WORD_WRAPPING_NO_WRAP
         }
         IDWriteTextLayout* pDWriteTextLayout1400;
         {
             std::wstring temp = L"14:00";
-            QILD2D::D2dWndIndep::s_pDWriteFactory->CreateTextLayout(temp.c_str(), temp.size(), QILD2D::D2dWndIndep::s_pDWriteTextFormat14, 200 /*width of layout box*/, 100 /*height of layout box*/, &pDWriteTextLayout1400);
+            QILD2D::D2dWndIndep::s_pDWriteFactory->CreateTextLayout(temp.c_str(), temp.size(), QILD2D::D2dWndIndep::s_pDWriteTextFormat14, 0 /*可使用renderTargetSize*/, 0 /*可使用renderTargetSize*/, &pDWriteTextLayout1400);
+            pDWriteTextLayout1400->SetWordWrapping(DWRITE_WORD_WRAPPING_NO_WRAP); // Set the word wrapping mode to DWRITE_WORD_WRAPPING_NO_WRAP
         }
         IDWriteTextLayout* pDWriteTextLayout1500;
         {
             std::wstring temp = L"15:00";
-            QILD2D::D2dWndIndep::s_pDWriteFactory->CreateTextLayout(temp.c_str(), temp.size(), QILD2D::D2dWndIndep::s_pDWriteTextFormat14, 200 /*width of layout box*/, 100 /*height of layout box*/, &pDWriteTextLayout1500);
+            QILD2D::D2dWndIndep::s_pDWriteFactory->CreateTextLayout(temp.c_str(), temp.size(), QILD2D::D2dWndIndep::s_pDWriteTextFormat14, 0 /*可使用renderTargetSize*/, 0 /*可使用renderTargetSize*/, &pDWriteTextLayout1500);
+            pDWriteTextLayout1500->SetWordWrapping(DWRITE_WORD_WRAPPING_NO_WRAP); // Set the word wrapping mode to DWRITE_WORD_WRAPPING_NO_WRAP
         }
         m_d2dWndDep->m_pD2D1HwndRenderTarget->DrawTextLayout(D2D1::Point2F(m_xStart + widthLeft + 0, m_yStart + heightPr + heightVol), pDWriteTextLayout0930, m_d2dWndDep->m_pD2DSolidColorBrushBlack);
         pDWriteTextLayout0930->Release();
