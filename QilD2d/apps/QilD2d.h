@@ -106,6 +106,16 @@ struct D2dWndDepLimitPeriodText {
     static LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 };
 
+struct D2dWndDepLimitPeriodTimeSharing {
+    int32_t m_nVert = 3; // 垂直
+    int32_t m_nHorz = 4; // 水平
+
+    std::vector<std::vector<QILD2D::D2dWndDepTimeSharing::WMPAINT>> m_vecVecD2dWndDepTimeSharing;
+
+    D2dWndDep m_D2dWndDep;
+    static LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+};
+
 }
 
 #define WNDMAIN_HMENU_FEATURE_LIMITPERIOD300 (WM_USER + 1)

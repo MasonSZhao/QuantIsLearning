@@ -4,6 +4,7 @@
 
 #include "QilHostSecurity.h"
 #include <string>
+#include <unordered_map>
 #include <vector>
 
 namespace QILHOST {
@@ -28,9 +29,13 @@ namespace TD {
         static std::string getFilePath(const char* exCode);
         static std::vector<QILHOST::TD::FltMinuteBar> flt(const char* exCode, const size_t readCount, const bool readBackNotFront);
         static std::vector<QILHOST::IntMinuteBar> int3264(const char* exCode, const size_t readCount, const bool readBackNotFront);
+
+        static std::vector<int32_t> s_vecDate1999999;
+        static std::unordered_map<int32_t, size_t> s_lutDate1999999;
+        static void lut1999999();
     };
 
-     /**
+    /**
      * @brief 读取证券代码文件。
      */
     struct FileVecExCode360 {

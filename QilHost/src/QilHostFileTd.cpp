@@ -173,6 +173,53 @@ namespace TD {
         return vecIntMinuteBar;
     }
 
+    std::vector<int32_t> FileVecMinuteBar::s_vecDate1999999;
+
+    std::unordered_map<int32_t, size_t> FileVecMinuteBar::s_lutDate1999999;
+
+    void FileVecMinuteBar::lut1999999()
+    {
+
+        std::vector<QILHOST::TD::FltMinuteBar> vecFltMinuteBar;
+        {
+            std::string filePath { QILHOST::TD::FileVecMinuteBar::getFilePath("1999999") };
+            std::ifstream ifs(filePath, std::ios::binary);
+            if (ifs.is_open()) {
+                ifs.seekg(0, std::ios::end);
+                std::streampos fileSize = ifs.tellg();
+                size_t readSize = 240 * sizeof(QILHOST::TD::FltMinuteBar);
+                // 从尾读取
+                if (false) {
+                }
+                // 从头读取
+                else {
+                    if (fileSize >= readSize) {
+                        ifs.seekg(0, std::ios::beg);
+                        vecFltMinuteBar.reserve(fileSize / sizeof(QILHOST::TD::FltMinuteBar));
+                        while (!ifs.eof()) {
+                            QILHOST::TD::FltMinuteBar temp;
+                            ifs >> temp;
+                            vecFltMinuteBar.push_back(temp);
+                            ifs.ignore(239 * sizeof(QILHOST::TD::FltMinuteBar));
+                        }
+                    }
+                }
+            } else {
+                std::cerr << "Failed to open file: " << filePath << std::endl;
+            }
+            ifs.close();
+        }
+
+        FileVecMinuteBar::s_vecDate1999999.reserve(vecFltMinuteBar.size());
+
+        for (const auto& e : vecFltMinuteBar)
+            FileVecMinuteBar::s_vecDate1999999.push_back(e.uintDate());
+
+        for (size_t i { 0 }; i < FileVecMinuteBar::s_vecDate1999999.size(); ++i) {
+            FileVecMinuteBar::s_lutDate1999999.insert(std::unordered_map<int32_t, size_t>::value_type(FileVecMinuteBar::s_vecDate1999999[i], i));
+        }
+    }
+
     std::string FileVecExCode360::s_filePathSz { "C:/new_tdx/T0002/hq_cache/szs.tnf" };
 
     std::string FileVecExCode360::s_filePathSh { "C:/new_tdx/T0002/hq_cache/shs.tnf" };
@@ -495,5 +542,4 @@ namespace TD {
     }
 
 }
-
 }

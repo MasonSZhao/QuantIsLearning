@@ -265,18 +265,39 @@ LRESULT CALLBACK D2dWndDepMain::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPA
         ptr->m_D2dWndDep.m_pD2D1HwndRenderTarget->BeginDraw();
         // All painting occurs here, between BeginPaint and EndPaint.
         ptr->m_D2dWndDep.m_pD2D1HwndRenderTarget->Clear(D2D1::ColorF(D2D1::ColorF::White));
-        QILD2D::D2dWndDepTimeSharing::WMPAINT op;
-        op.m_preCl = ptr->m_D2dWndDepMinuteBar1999999.m_preCl;
-        op.m_limitUpPr = ptr->m_D2dWndDepMinuteBar1999999.m_limitUpPr;
-        op.m_limitDnPr = ptr->m_D2dWndDepMinuteBar1999999.m_limitDnPr;
-        op.m_volMax = ptr->m_D2dWndDepMinuteBar1999999.m_volMax;
-        op.m_xStart = 0;
-        op.m_yStart = 0;
-        op.m_xWidth = (rc.right - rc.left);
-        op.m_yHeight = (rc.bottom - rc.top);
-        op.m_d2dWndDep = &(ptr->m_D2dWndDep);
-        op.m_vecIntMinuteBar = &(ptr->m_D2dWndDepMinuteBar1999999.m_vecMinuteBar);
-        op.operator()();
+        if (false) {
+            QILD2D::D2dWndDepTimeSharing::WMPAINT op;
+            op.m_preCl = ptr->m_D2dWndDepMinuteBar1999999.m_preCl;
+            op.m_limitUpPr = ptr->m_D2dWndDepMinuteBar1999999.m_limitUpPr;
+            op.m_limitDnPr = ptr->m_D2dWndDepMinuteBar1999999.m_limitDnPr;
+            op.m_volMax = ptr->m_D2dWndDepMinuteBar1999999.m_volMax;
+            op.m_xStart = 0;
+            op.m_yStart = 0;
+            op.m_xWidth = (rc.right - rc.left);
+            op.m_yHeight = (rc.bottom - rc.top);
+            op.m_d2dWndDep = &(ptr->m_D2dWndDep);
+            op.m_vecIntMinuteBar = &(ptr->m_D2dWndDepMinuteBar1999999.m_vecMinuteBar);
+            op.operator()();
+        } else {
+            int32_t nVert = 3; // 垂直
+            int32_t nHorz = 4; // 水平
+            for (int32_t i { 0 }; i < nHorz; ++i) {
+                for (int32_t j { 0 }; j < nVert; ++j) {
+                    QILD2D::D2dWndDepTimeSharing::WMPAINT op;
+                    op.m_preCl = ptr->m_D2dWndDepMinuteBar1999999.m_preCl;
+                    op.m_limitUpPr = ptr->m_D2dWndDepMinuteBar1999999.m_limitUpPr;
+                    op.m_limitDnPr = ptr->m_D2dWndDepMinuteBar1999999.m_limitDnPr;
+                    op.m_volMax = ptr->m_D2dWndDepMinuteBar1999999.m_volMax;
+                    op.m_xStart = 0 + i * (rc.right - rc.left) / nHorz;
+                    op.m_yStart = 0 + j * (rc.bottom - rc.top) / nVert;
+                    op.m_xWidth = (rc.right - rc.left) / nHorz;
+                    op.m_yHeight = (rc.bottom - rc.top) / nVert;
+                    op.m_d2dWndDep = &(ptr->m_D2dWndDep);
+                    op.m_vecIntMinuteBar = &(ptr->m_D2dWndDepMinuteBar1999999.m_vecMinuteBar);
+                    op.operator()();
+                }
+            }
+        }
         // FillRect(hDC, &ps.rcPaint, //(HBRUSH)GetStockObject(WHITE_BRUSH));
         //     CreateSolidBrush(RGB((rand() % (255 + 1)), (rand() % (255 + 1)), (rand() % (255 + 1)))));
         ptr->m_D2dWndDep.m_pD2D1HwndRenderTarget->EndDraw();

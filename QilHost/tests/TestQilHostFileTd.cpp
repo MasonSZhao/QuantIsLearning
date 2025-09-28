@@ -70,6 +70,26 @@ SCENARIO("Seq Read MinuteFile", "[Seq Read MinuteFile]")
     }
 }
 
+SCENARIO("Lut MinuteFile 1999999")
+{
+    QILHOST::TD::FileVecMinuteBar::lut1999999();
+
+    std::cout << QILHOST::TD::FileVecMinuteBar::s_vecDate1999999.size() << '\t'
+              << QILHOST::TD::FileVecMinuteBar::s_lutDate1999999.size() << std::endl;
+
+    CHECK(QILHOST::TD::FileVecMinuteBar::s_vecDate1999999.size() == QILHOST::TD::FileVecMinuteBar::s_lutDate1999999.size());
+
+    std::cout << std::endl;
+    std::cout << std::endl;
+
+    for (const auto e : QILHOST::TD::FileVecMinuteBar::s_vecDate1999999) {
+        std::cout << e << '\t';
+    }
+
+    std::cout << std::endl;
+    std::cout << std::endl;
+}
+
 SCENARIO("Seq Read FileVecExCodeSz", "[Seq Read FileVecExCodeSz]")
 {
     GIVEN("File360")
