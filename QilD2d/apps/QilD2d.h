@@ -19,7 +19,12 @@
 #include "..\..\QilHost\include\QilHostSecurityS.h"
 #include "..\..\QilHost\include\QilHostTech.h"
 
+#include <algorithm>
+#include <atlconv.h> // USES_CONVERSION, W2A, A2W
+#include <deque>
 #include <iostream>
+#include <mutex>
+#include <sstream>
 #include <thread>
 #include <vector>
 
@@ -118,6 +123,9 @@ struct D2dWndDepLimitPeriodTimeSharing {
 
 }
 
-#define WNDMAIN_HMENU_FEATURE_LIMITPERIOD300 (WM_USER + 1)
-#define WNDMAIN_HMENU_FEATURE_LIMITPERIOD688 (WM_USER + 2)
-#define WNDMAIN_HMENU_FEATURE_LIMITPERIODBJ (WM_USER + 3)
+#define WNDMAIN_HMENU_FEATURE_LIMITPERIOD300DESCRIPTION (WM_USER + 1)
+#define WNDMAIN_HMENU_FEATURE_LIMITPERIOD300TIMESHARING (WM_USER + 2)
+#define WNDMAIN_HMENU_FEATURE_LIMITPERIOD688DESCRIPTION (WM_USER + 3)
+#define WNDMAIN_HMENU_FEATURE_LIMITPERIOD688TIMESHARING (WM_USER + 4)
+#define WNDMAIN_HMENU_FEATURE_LIMITPERIODBJDESCRIPTION (WM_USER + 5)
+#define WNDMAIN_HMENU_FEATURE_LIMITPERIODBJTIMESHARING (WM_USER + 6)

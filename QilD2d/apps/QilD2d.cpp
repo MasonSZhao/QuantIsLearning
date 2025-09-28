@@ -111,9 +111,12 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     HMENU hMenuFeature = CreateMenu();
     AppendMenu(hMenu, MF_POPUP, (UINT)hMenuFeature, TEXT("功能"));
     {
-        AppendMenu(hMenuFeature, MF_STRING, WNDMAIN_HMENU_FEATURE_LIMITPERIOD300, TEXT("创业板周期"));
-        AppendMenu(hMenuFeature, MF_STRING, WNDMAIN_HMENU_FEATURE_LIMITPERIOD688, TEXT("科创板周期"));
-        AppendMenu(hMenuFeature, MF_STRING, WNDMAIN_HMENU_FEATURE_LIMITPERIODBJ, TEXT("北交所周期"));
+        AppendMenu(hMenuFeature, MF_STRING, WNDMAIN_HMENU_FEATURE_LIMITPERIOD300DESCRIPTION, TEXT("创业板周期（简述）"));
+        AppendMenu(hMenuFeature, MF_STRING, WNDMAIN_HMENU_FEATURE_LIMITPERIOD300TIMESHARING, TEXT("创业板周期（分时）"));
+        AppendMenu(hMenuFeature, MF_STRING, WNDMAIN_HMENU_FEATURE_LIMITPERIOD688DESCRIPTION, TEXT("科创板周期（简述）"));
+        AppendMenu(hMenuFeature, MF_STRING, WNDMAIN_HMENU_FEATURE_LIMITPERIOD688TIMESHARING, TEXT("科创板周期（分时）"));
+        AppendMenu(hMenuFeature, MF_STRING, WNDMAIN_HMENU_FEATURE_LIMITPERIODBJDESCRIPTION, TEXT("北交所周期（简述）"));
+        AppendMenu(hMenuFeature, MF_STRING, WNDMAIN_HMENU_FEATURE_LIMITPERIODBJTIMESHARING, TEXT("北交所周期（分时）"));
     }
     HMENU hMenuOptions = CreateMenu();
     AppendMenu(hMenu, MF_POPUP, (UINT)hMenuOptions, TEXT("设置"));
@@ -317,7 +320,7 @@ LRESULT CALLBACK D2dWndDepMain::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPA
         auto wNotifyCode = HIWORD(wParam); // 菜单消息的通知码为0，加速键消息的通知码为1。
         auto wID = LOWORD(wParam);
         switch (wID) {
-        case WNDMAIN_HMENU_FEATURE_LIMITPERIOD300: {
+        case WNDMAIN_HMENU_FEATURE_LIMITPERIOD300DESCRIPTION: {
             HWND hWndLimitPeriodText = CreateWindow(
                 TEXT("WndLimitPeriodText"), // 窗口类注册名称
                 TEXT("创业板周期"), // 窗口标题
@@ -332,6 +335,9 @@ LRESULT CALLBACK D2dWndDepMain::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPA
                 NULL // 窗口创建参数
             );
             QILD2D::D2dWndDepLimitPeriodText* ptr = reinterpret_cast<QILD2D::D2dWndDepLimitPeriodText*>(static_cast<LONG_PTR>(GetWindowLongPtr(hWnd, GWLP_USERDATA)));
+            break;
+        }
+        case WNDMAIN_HMENU_FEATURE_LIMITPERIOD300TIMESHARING: {
             break;
         }
         default:
@@ -464,17 +470,137 @@ LRESULT CALLBACK D2dWndDepLimitPeriodText::WndProc(HWND hWnd, UINT uMsg, WPARAM 
             std::vector<std::jthread> vecThread;
             // 并行线程
             vecThread.emplace_back([&]() {
-                ptr->m_vecPDWriteTextLayout.resize(200);
-                for (size_t i = 0; i < 200 /*A large enough number just for feature test*/; ++i) {
+                {
+                    int32_t startDate;
                     {
-                        std::wstring temp = std::to_wstring(i);
-                        temp += L" Quant Is Learning. 量化正在学习。测试永久免费商用字体。 ";
-                        temp += std::to_wstring(i);
+                        std::vector<QILHOST::IntMinuteBar> vecIntMinuteBar { QILHOST::TD::FileVecMinuteBar::int3264("1999999", 1, false) };
+                        startDate = vecIntMinuteBar[0].m_date;
+                    }
+                    {
+                        time_t time_tTime = time(nullptr);
+                        tm tmTime;
+                        localtime_s(&tmTime, &time_tTime);
+                        std::vector<QILHOST::TD::FltDayBar> vecFltDayBar { QILHOST::TD::FileVecDayBar::flt("1999999", (tmTime.tm_year + 1900 - startDate / 10000 + 1) * 365, true) };
+                        for (auto& e : vecFltDayBar) {
+                            if (e.m_date >= startDate) {
+                                QILHOST::TimeSeriesCrossSector::s_vecDate.push_back(e.m_date);
+                            }
+                        }
+                    }
+                    QILHOST::TimeSeriesCrossSector::s_vecVecIntLimitUp.resize(QILHOST::TimeSeriesCrossSector::s_vecDate.size());
+                }
+                QILHOST::TD::FileVecExCode360::sz(false, true);
+                {
+                    QILHOST::CrossSectorTimeSeries::s_vecVecIntDayBar.resize(QILHOST::VecExCode360::s_vecExCode.size());
+                }
+                {
+                    size_t idxPara { 0 };
+                    std::mutex mutIdx;
+                    std::vector<std::jthread> vecThread;
+                    for (auto idxThread { 0 }; idxThread < std::thread::hardware_concurrency() / 2; ++idxThread) {
+                        vecThread.emplace_back([&]() {
+                            std::vector<std::vector<QILHOST::IntLimitUpDn>> vecVecIntLimitUp;
+                            vecVecIntLimitUp.resize(QILHOST::TimeSeriesCrossSector::s_vecDate.size());
+                            while (true) {
+                                size_t idxLocal;
+                                {
+                                    std::unique_lock<std::mutex> lk(mutIdx);
+                                    idxLocal = idxPara;
+                                    if (!(idxLocal < QILHOST::VecExCode360::s_vecExCode.size())) {
+                                        break;
+                                    }
+                                    // std::cout << idxPara << std::endl;
+                                    ++idxPara;
+                                }
+                                {
+                                    std::vector<QILHOST::IntDateBar> vecIntDayBar { QILHOST::TD::FileVecDayBar::int3264(QILHOST::VecExCode360::s_vecExCode[idxLocal].data(), QILHOST::TimeSeriesCrossSector::s_vecDate.size() + 30, true) };
+                                    std::deque<QILHOST::IntLimitUpDn> deqLimit;
+                                    std::deque<int32_t> deqDate;
+                                    for (size_t idxVecIntDayBar { 1 }; idxVecIntDayBar < vecIntDayBar.size(); ++idxVecIntDayBar) {
+                                        auto uplimitType = 100 + QILHOST::TechLimitType0::int32(QILHOST::VecExCode360::s_vecExCode[idxLocal].data());
+                                        if (QILHOST::TechLimitCur1::int32(vecIntDayBar[idxVecIntDayBar - 1].m_cl, uplimitType) == vecIntDayBar[idxVecIntDayBar].m_cl) {
+                                            QILHOST::IntLimitUpDn temp;
+                                            temp.m_idxVecExCode = idxLocal;
+                                            temp.m_idxVecIntDayBar = idxVecIntDayBar;
+                                            if (deqLimit.empty()) {
+                                                temp.m_count = 1;
+                                            } else {
+                                                if (deqLimit.back().m_idxVecIntDayBar + 1 == idxVecIntDayBar) {
+                                                    temp.m_count = deqLimit.back().m_count + 1;
+                                                } else {
+                                                    temp.m_count = 1;
+                                                }
+                                            }
+                                            deqLimit.push_back(temp);
+                                            deqDate.push_back(vecIntDayBar[idxVecIntDayBar].m_date);
+                                        }
+                                    }
+                                    while (!deqDate.empty()) {
+                                        if (deqDate.front() < QILHOST::TimeSeriesCrossSector::s_vecDate.front()) {
+                                            deqDate.pop_front();
+                                            deqLimit.pop_front();
+                                        } else {
+                                            break;
+                                        }
+                                    }
+                                    for (size_t idxVecDate { 0 }; idxVecDate < QILHOST::TimeSeriesCrossSector::s_vecDate.size(); ++idxVecDate) {
+                                        if (deqDate.empty()) {
+                                            break;
+                                        } else {
+                                            if (deqDate.front() == QILHOST::TimeSeriesCrossSector::s_vecDate[idxVecDate]) {
+                                                vecVecIntLimitUp[idxVecDate].push_back(deqLimit.front());
+                                                deqLimit.pop_front();
+                                                deqDate.pop_front();
+                                            } else {
+                                                continue;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            {
+                                std::unique_lock<std::mutex> lk(mutIdx);
+                                for (size_t idxVecVecIntLimitUp { 0 }; idxVecVecIntLimitUp < vecVecIntLimitUp.size(); ++idxVecVecIntLimitUp) {
+                                    for (const auto& e : vecVecIntLimitUp[idxVecVecIntLimitUp]) {
+                                        QILHOST::TimeSeriesCrossSector::s_vecVecIntLimitUp[idxVecVecIntLimitUp].push_back(e);
+                                    }
+                                }
+                            }
+                        });
+                    }
+                }
+                for (auto& e : QILHOST::TimeSeriesCrossSector::s_vecVecIntLimitUp) {
+                    std::sort(e.begin(), e.end(), [](const QILHOST::IntLimitUpDn& a, const QILHOST::IntLimitUpDn& b) {
+                        return a.m_count > b.m_count;
+                    });
+                }
+                if (true) {
+                    std::string empty { "          " };
+                    for (size_t idxTimeSeries { 0 }; idxTimeSeries < QILHOST::TimeSeriesCrossSector::s_vecDate.size(); ++idxTimeSeries) {
+
+                        std::stringstream ss;
+
+                        ss << QILHOST::TimeSeriesCrossSector::s_vecDate[idxTimeSeries];
+
+                        for (const auto& e : QILHOST::TimeSeriesCrossSector::s_vecVecIntLimitUp[idxTimeSeries]) {
+                            for (int32_t idxCount { 0 }; idxCount < e.m_count; ++idxCount)
+                                ss << empty;
+                            ss << QILHOST::VecExCode360::s_vecName[e.m_idxVecExCode].data() << '_' << e.m_count;
+                        }
+
+                        std::string str = ss.str();
+
+                        USES_CONVERSION;
+
+                        std::wstring temp = A2W(str.c_str());
+
+                        ptr->m_vecPDWriteTextLayout.resize(ptr->m_vecPDWriteTextLayout.size() + 1);
+
                         // D2D1_SIZE_F renderTargetSize = ptr->m_D2dWndDep.m_pD2D1HwndRenderTarget->GetSize();
-                        QILD2D::D2dWndIndep::s_pDWriteFactory->CreateTextLayout(temp.c_str(), temp.size(), QILD2D::D2dWndIndep::s_pDWriteTextFormat16, 0 /*可使用renderTargetSize*/, 0 /*可使用renderTargetSize*/, &ptr->m_vecPDWriteTextLayout[i]);
-                        ptr->m_vecPDWriteTextLayout[i]->SetWordWrapping(DWRITE_WORD_WRAPPING_NO_WRAP); // Set the word wrapping mode to DWRITE_WORD_WRAPPING_NO_WRAP
+                        QILD2D::D2dWndIndep::s_pDWriteFactory->CreateTextLayout(temp.c_str(), temp.size(), QILD2D::D2dWndIndep::s_pDWriteTextFormat16, 0 /*可使用renderTargetSize*/, 0 /*可使用renderTargetSize*/, &ptr->m_vecPDWriteTextLayout.back());
+                        ptr->m_vecPDWriteTextLayout.back()->SetWordWrapping(DWRITE_WORD_WRAPPING_NO_WRAP); // Set the word wrapping mode to DWRITE_WORD_WRAPPING_NO_WRAP
                         DWRITE_TEXT_METRICS textMetrics;
-                        ptr->m_vecPDWriteTextLayout[i]->GetMetrics(&textMetrics);
+                        ptr->m_vecPDWriteTextLayout.back()->GetMetrics(&textMetrics);
                         float width = textMetrics.widthIncludingTrailingWhitespace;
                         if (width > ptr->m_maxWidthVecPDWriteTextLayout) {
                             ptr->m_maxWidthVecPDWriteTextLayout = width;
