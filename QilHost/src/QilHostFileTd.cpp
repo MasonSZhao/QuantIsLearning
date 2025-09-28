@@ -32,7 +32,7 @@ namespace TD {
         return filePath;
     }
 
-    std::vector<QILHOST::TD::FltDayBar> FileVecDayBar::flt(const char* exCode, const size_t readCount, const bool readBackNotFront)
+    std::vector<QILHOST::TD::FltDayBar> FileVecDayBar::flt(const char* exCode, const size_t readCount, const bool readFromBackNotFront)
     {
         std::vector<QILHOST::TD::FltDayBar> vecFltDayBar;
         {
@@ -43,7 +43,7 @@ namespace TD {
                 std::streampos fileSize = ifs.tellg();
                 size_t readSize = readCount * sizeof(QILHOST::TD::FltDayBar);
                 // 从尾读取
-                if (readBackNotFront) {
+                if (readFromBackNotFront) {
                     if (fileSize >= readSize) {
                         ifs.seekg(-1 * readSize, std::ios::end);
                         vecFltDayBar.resize(readCount);
@@ -75,9 +75,9 @@ namespace TD {
         return vecFltDayBar;
     }
 
-    std::vector<QILHOST::IntDateBar> FileVecDayBar::int3264(const char* exCode, const size_t readCount, const bool readBackNotFront)
+    std::vector<QILHOST::IntDateBar> FileVecDayBar::int3264(const char* exCode, const size_t readCount, const bool readFromBackNotFront)
     {
-        std::vector<QILHOST::TD::FltDayBar> vecFltDayBar { flt(exCode, readCount, readBackNotFront) };
+        std::vector<QILHOST::TD::FltDayBar> vecFltDayBar { flt(exCode, readCount, readFromBackNotFront) };
         std::vector<QILHOST::IntDateBar> vecIntDateBar;
         vecIntDateBar.resize(vecFltDayBar.size());
         for (size_t i { 0 }; i < vecFltDayBar.size(); ++i) {
@@ -111,7 +111,7 @@ namespace TD {
         return filePath;
     }
 
-    std::vector<QILHOST::TD::FltMinuteBar> FileVecMinuteBar::flt(const char* exCode, const size_t readCount, const bool readBackNotFront)
+    std::vector<QILHOST::TD::FltMinuteBar> FileVecMinuteBar::flt(const char* exCode, const size_t readCount, const bool readFromBackNotFront)
     {
         std::vector<QILHOST::TD::FltMinuteBar> vecFltMinuteBar;
         {
@@ -122,7 +122,7 @@ namespace TD {
                 std::streampos fileSize = ifs.tellg();
                 size_t readSize = readCount * sizeof(QILHOST::TD::FltMinuteBar);
                 // 从尾读取
-                if (readBackNotFront) {
+                if (readFromBackNotFront) {
                     if (fileSize >= readSize) {
                         ifs.seekg(-1 * readSize, std::ios::end);
                         vecFltMinuteBar.resize(readCount);
@@ -153,9 +153,9 @@ namespace TD {
         return vecFltMinuteBar;
     }
 
-    std::vector<QILHOST::IntMinuteBar> FileVecMinuteBar::int3264(const char* exCode, const size_t readCount, const bool readBackNotFront)
+    std::vector<QILHOST::IntMinuteBar> FileVecMinuteBar::int3264(const char* exCode, const size_t readCount, const bool readFromBackNotFront)
     {
-        std::vector<QILHOST::TD::FltMinuteBar> vecFltMinuteBar { flt(exCode, readCount, readBackNotFront) };
+        std::vector<QILHOST::TD::FltMinuteBar> vecFltMinuteBar { flt(exCode, readCount, readFromBackNotFront) };
         std::vector<QILHOST::IntMinuteBar> vecIntMinuteBar;
         vecIntMinuteBar.reserve(vecFltMinuteBar.size());
         for (const auto& e : vecFltMinuteBar) {
@@ -195,8 +195,12 @@ namespace TD {
                 else {
                     if (fileSize >= readSize) {
                         ifs.seekg(0, std::ios::beg);
-                        vecFltMinuteBar.reserve(fileSize / sizeof(QILHOST::TD::FltMinuteBar));
-                        while (!ifs.eof()) {
+                        size_t fileCount = fileSize / sizeof(QILHOST::TD::FltMinuteBar);
+                        vecFltMinuteBar.reserve(fileCount);
+                        // BUG: The 'while' code will read the last QILHOST::TD::FltMinuteBar twice, then trigger ifs.tellg() == -1 which means ifs.eof().
+                        // while (!ifs.eof()) {
+                        // FIX:
+                        for (size_t i { 0 }; i < fileCount / 240; ++i) {
                             QILHOST::TD::FltMinuteBar temp;
                             ifs >> temp;
                             vecFltMinuteBar.push_back(temp);

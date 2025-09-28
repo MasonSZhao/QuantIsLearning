@@ -17,8 +17,8 @@ namespace TD {
     struct FileVecDayBar {
         static std::string s_folderPath;
         static std::string getFilePath(const char* exCode);
-        static std::vector<QILHOST::TD::FltDayBar> flt(const char* exCode, const size_t readCount, const bool readBackNotFront);
-        static std::vector<QILHOST::IntDateBar> int3264(const char* exCode, const size_t readCount, const bool readBackNotFront);
+        static std::vector<QILHOST::TD::FltDayBar> flt(const char* exCode, const size_t readCount, const bool readFromBackNotFront);
+        static std::vector<QILHOST::IntDateBar> int3264(const char* exCode, const size_t readCount, const bool readFromBackNotFront);
     };
 
     /**
@@ -27,8 +27,8 @@ namespace TD {
     struct FileVecMinuteBar {
         static std::string s_folderPath;
         static std::string getFilePath(const char* exCode);
-        static std::vector<QILHOST::TD::FltMinuteBar> flt(const char* exCode, const size_t readCount, const bool readBackNotFront);
-        static std::vector<QILHOST::IntMinuteBar> int3264(const char* exCode, const size_t readCount, const bool readBackNotFront);
+        static std::vector<QILHOST::TD::FltMinuteBar> flt(const char* exCode, const size_t readCount, const bool readFromBackNotFront);
+        static std::vector<QILHOST::IntMinuteBar> int3264(const char* exCode, const size_t readCount, const bool readFromBackNotFront);
 
         static std::vector<int32_t> s_vecDate1999999;
         static std::unordered_map<int32_t, size_t> s_lutDate1999999;
