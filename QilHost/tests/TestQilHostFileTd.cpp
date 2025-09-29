@@ -73,21 +73,154 @@ SCENARIO("Seq Read MinuteFile", "[Seq Read MinuteFile]")
 SCENARIO("Lut MinuteFile 1999999")
 {
     QILHOST::TD::FileVecMinuteBar::lut1999999();
-
     std::cout << QILHOST::TD::FileVecMinuteBar::s_vecDate1999999.size() << '\t'
               << QILHOST::TD::FileVecMinuteBar::s_lutDate1999999.size() << std::endl;
-
     CHECK(QILHOST::TD::FileVecMinuteBar::s_vecDate1999999.size() == QILHOST::TD::FileVecMinuteBar::s_lutDate1999999.size());
-
     std::cout << std::endl;
     std::cout << std::endl;
-
     for (const auto e : QILHOST::TD::FileVecMinuteBar::s_vecDate1999999) {
         std::cout << e << '\t';
     }
+    std::cout << std::endl;
+    std::cout << std::endl;
+    QILHOST::TD::FileVecMinuteBar::s_lutDate1999999.clear();
+    QILHOST::TD::FileVecMinuteBar::s_vecDate1999999.clear();
+}
 
-    std::cout << std::endl;
-    std::cout << std::endl;
+SCENARIO("Date Read MinuteFile", "[Date Read MinuteFile]")
+{
+    QILHOST::TD::FileVecMinuteBar::lut1999999();
+    GIVEN("File")
+    {
+        WHEN("Read flt")
+        {
+            WHEN("Do Need ReSearch")
+            {
+                WHEN("Do NOT Have Enough")
+                {
+                    if (true) {
+                        std::vector<QILHOST::TD::FltMinuteBar> vecFltMinuteBar = QILHOST::TD::FileVecMinuteBar::fltDate("0399006", 480, QILHOST::TD::FileVecMinuteBar::s_vecDate1999999.back());
+                        if (false) {
+                            for (size_t i { 0 }; i < vecFltMinuteBar.size(); ++i)
+                                std::cout << vecFltMinuteBar[i] << std::endl;
+                        }
+                        CHECK(vecFltMinuteBar.size() == 240);
+                    }
+                }
+                WHEN("Do Have Enough")
+                {
+                    if (true) {
+                        std::vector<QILHOST::TD::FltMinuteBar> vecFltMinuteBar = QILHOST::TD::FileVecMinuteBar::fltDate("0399006", 480, QILHOST::TD::FileVecMinuteBar::s_vecDate1999999[QILHOST::TD::FileVecMinuteBar::s_vecDate1999999.size() - 2]);
+                        if (false) {
+                            for (size_t i { 0 }; i < vecFltMinuteBar.size(); ++i)
+                                std::cout << vecFltMinuteBar[i] << std::endl;
+                        }
+                        CHECK(vecFltMinuteBar.size() == 480);
+                    }
+                }
+            }
+            WHEN("Do NOT Need ReSearch")
+            {
+                WHEN("Do NOT Have Enough")
+                {
+                    if (true) {
+                        // QILHOST::TD::FileVecMinuteBar::lut1999999();
+                        std::vector<QILHOST::TD::FltMinuteBar> vecFltMinuteBar = QILHOST::TD::FileVecMinuteBar::fltDate(
+                            "0399006",
+                            480,
+                            QILHOST::TD::FileVecMinuteBar::s_vecDate1999999[QILHOST::TD::FileVecMinuteBar::s_vecDate1999999.size() - 2],
+                            QILHOST::TD::FileVecMinuteBar::s_vecDate1999999.size() * 240,
+                            (QILHOST::TD::FileVecMinuteBar::s_vecDate1999999.size() - 1) * 240);
+                        if (false) {
+                            for (size_t i { 0 }; i < vecFltMinuteBar.size(); ++i)
+                                std::cout << vecFltMinuteBar[i] << std::endl;
+                        }
+                    }
+                }
+                WHEN("Do Have Enough")
+                {
+                    if (true) {
+                        // QILHOST::TD::FileVecMinuteBar::lut1999999();
+                        std::vector<QILHOST::TD::FltMinuteBar> vecFltMinuteBar = QILHOST::TD::FileVecMinuteBar::fltDate(
+                            "0399006",
+                            480,
+                            QILHOST::TD::FileVecMinuteBar::s_vecDate1999999[QILHOST::TD::FileVecMinuteBar::s_vecDate1999999.size() - 2],
+                            QILHOST::TD::FileVecMinuteBar::s_vecDate1999999.size() * 240,
+                            (QILHOST::TD::FileVecMinuteBar::s_vecDate1999999.size() - 2) * 240);
+                        if (false) {
+                            for (size_t i { 0 }; i < vecFltMinuteBar.size(); ++i)
+                                std::cout << vecFltMinuteBar[i] << std::endl;
+                        }
+                    }
+                }
+            }
+        }
+        WHEN("Read Int")
+        {
+            WHEN("Do Need ReSearch")
+            {
+                WHEN("Do NOT Have Enough")
+                {
+                    if (true) {
+                        std::vector<QILHOST::IntMinuteBar> vecIntMinuteBar = QILHOST::TD::FileVecMinuteBar::int3264Date("0399006", 480, QILHOST::TD::FileVecMinuteBar::s_vecDate1999999.back());
+                        if (false) {
+                            for (size_t i { 0 }; i < vecIntMinuteBar.size(); ++i)
+                                std::cout << vecIntMinuteBar[i] << std::endl;
+                        }
+                        CHECK(vecIntMinuteBar.size() == 240);
+                    }
+                }
+                WHEN("Do Have Enough")
+                {
+                    if (true) {
+                        std::vector<QILHOST::IntMinuteBar> vecIntMinuteBar = QILHOST::TD::FileVecMinuteBar::int3264Date("0399006", 480, QILHOST::TD::FileVecMinuteBar::s_vecDate1999999[QILHOST::TD::FileVecMinuteBar::s_vecDate1999999.size() - 2]);
+                        if (false) {
+                            for (size_t i { 0 }; i < vecIntMinuteBar.size(); ++i)
+                                std::cout << vecIntMinuteBar[i] << std::endl;
+                        }
+                        CHECK(vecIntMinuteBar.size() == 480);
+                    }
+                }
+            }
+            WHEN("Do NOT Need ReSearch")
+            {
+                WHEN("Do NOT Have Enough")
+                {
+                    if (true) {
+                        // QILHOST::TD::FileVecMinuteBar::lut1999999();
+                        std::vector<QILHOST::IntMinuteBar> vecIntMinuteBar = QILHOST::TD::FileVecMinuteBar::int3264Date(
+                            "0399006",
+                            480,
+                            QILHOST::TD::FileVecMinuteBar::s_vecDate1999999[QILHOST::TD::FileVecMinuteBar::s_vecDate1999999.size() - 2],
+                            QILHOST::TD::FileVecMinuteBar::s_vecDate1999999.size() * 240,
+                            (QILHOST::TD::FileVecMinuteBar::s_vecDate1999999.size() - 1) * 240);
+                        if (false) {
+                            for (size_t i { 0 }; i < vecIntMinuteBar.size(); ++i)
+                                std::cout << vecIntMinuteBar[i] << std::endl;
+                        }
+                    }
+                }
+                WHEN("Do Have Enough")
+                {
+                    if (true) {
+                        // QILHOST::TD::FileVecMinuteBar::lut1999999();
+                        std::vector<QILHOST::IntMinuteBar> vecIntMinuteBar = QILHOST::TD::FileVecMinuteBar::int3264Date(
+                            "0399006",
+                            480,
+                            QILHOST::TD::FileVecMinuteBar::s_vecDate1999999[QILHOST::TD::FileVecMinuteBar::s_vecDate1999999.size() - 2],
+                            QILHOST::TD::FileVecMinuteBar::s_vecDate1999999.size() * 240,
+                            (QILHOST::TD::FileVecMinuteBar::s_vecDate1999999.size() - 2) * 240);
+                        if (false) {
+                            for (size_t i { 0 }; i < vecIntMinuteBar.size(); ++i)
+                                std::cout << vecIntMinuteBar[i] << std::endl;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    QILHOST::TD::FileVecMinuteBar::s_lutDate1999999.clear();
+    QILHOST::TD::FileVecMinuteBar::s_vecDate1999999.clear();
 }
 
 SCENARIO("Seq Read FileVecExCodeSz", "[Seq Read FileVecExCodeSz]")

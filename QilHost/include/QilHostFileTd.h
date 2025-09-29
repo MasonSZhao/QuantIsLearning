@@ -29,6 +29,8 @@ namespace TD {
         static std::string getFilePath(const char* exCode);
         static std::vector<QILHOST::TD::FltMinuteBar> flt(const char* exCode, const size_t readCount, const bool readFromBackNotFront);
         static std::vector<QILHOST::IntMinuteBar> int3264(const char* exCode, const size_t readCount, const bool readFromBackNotFront);
+        static std::vector<QILHOST::TD::FltMinuteBar> fltDate(const char* exCode, const size_t readCount, const int32_t readFromDate, const size_t guessFileCount = 0, const ptrdiff_t guessFileIdx = -1 /*, const bool readPreClose = true*/);
+        static std::vector<QILHOST::IntMinuteBar> int3264Date(const char* exCode, const size_t readCount, const int32_t readFromDate, const size_t guessFileCount = 0, const ptrdiff_t guessFileIdx = -1 /*, const bool readPreClose = true*/);
 
         static std::vector<int32_t> s_vecDate1999999;
         static std::unordered_map<int32_t, size_t> s_lutDate1999999;
