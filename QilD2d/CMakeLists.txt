@@ -11,11 +11,17 @@ set(CMAKE_WIN32_EXECUTABLE TRUE) # When this property is set to true the executa
 # Copy font files to the build directory
 file(COPY ${CMAKE_SOURCE_DIR}/AlibabaPuHuiTi-3-55-Regular.ttf DESTINATION ${CMAKE_BINARY_DIR})
 
+# Glob all files ended with .h and .cpp in the folders.
+file (GLOB QILD2D_SRCS CONFIGURE_DEPENDS "src/QilD2d*.cpp")
+file (GLOB QILD2D_HEADERS CONFIGURE_DEPENDS "include/QilD2d*.h")
+
 # Add source to this project's executable.
 add_executable (
 	QilD2dExecute
 	"apps/QilD2d.cpp" 
 	"apps/QilD2d.h"
+	${QILD2D_SRCS}
+	${QILD2D_HEADERS}
 )
 
 target_link_libraries(QilD2dExecute PUBLIC QilHostStatic)
