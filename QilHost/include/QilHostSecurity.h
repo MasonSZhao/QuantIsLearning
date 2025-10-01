@@ -178,6 +178,7 @@ namespace TD {
 };
 
 struct IntLimitUpDn {
+    int32_t m_preCl;
     size_t m_idxVecExCode;
     size_t m_idxVecIntDayBar;
     int32_t m_count;

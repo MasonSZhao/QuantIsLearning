@@ -92,9 +92,10 @@ LRESULT CALLBACK D2dWndDepLimitPeriodText::WndProc(HWND hWnd, UINT uMsg, WPARAM 
                                     std::deque<QILHOST::IntLimitUpDn> deqLimit;
                                     std::deque<int32_t> deqDate;
                                     for (size_t idxVecIntDayBar { 1 }; idxVecIntDayBar < vecIntDayBar.size(); ++idxVecIntDayBar) {
-                                        auto uplimitType = 100 + QILHOST::TechLimitType0::int32(QILHOST::VecExCode360::s_vecExCode[idxLocal].data());
-                                        if (QILHOST::TechLimitCur1::int32(vecIntDayBar[idxVecIntDayBar - 1].m_cl, uplimitType) == vecIntDayBar[idxVecIntDayBar].m_cl) {
+                                        int32_t limitType = QILHOST::TechLimitType0::int32(QILHOST::VecExCode360::s_vecExCode[idxLocal].data());
+                                        if (QILHOST::TechLimitCur1::int32(vecIntDayBar[idxVecIntDayBar - 1].m_cl, 100 + limitType) == vecIntDayBar[idxVecIntDayBar].m_cl) {
                                             QILHOST::IntLimitUpDn temp;
+                                            temp.m_preCl = vecIntDayBar[idxVecIntDayBar - 1].m_cl;
                                             temp.m_idxVecExCode = idxLocal;
                                             temp.m_idxVecIntDayBar = idxVecIntDayBar;
                                             if (deqLimit.empty()) {
