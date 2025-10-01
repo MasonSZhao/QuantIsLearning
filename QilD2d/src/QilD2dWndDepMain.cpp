@@ -38,28 +38,30 @@ LRESULT CALLBACK D2dWndDepMain::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPA
             vecThread.emplace_back([&]() {
                 std::vector<QILHOST::IntMinuteBar> des { QILHOST::TD::FileVecMinuteBar::int3264("1999999", 241, true) };
                 {
-                    ptr->m_D2dWndDepMinuteBar1999999.m_vecMinuteBar.reserve(240);
-                    ptr->m_D2dWndDepMinuteBar1999999.m_preCl = des[0].m_cl;
-                    ptr->m_D2dWndDepMinuteBar1999999.m_limitUpPr = des[1].m_cl;
-                    ptr->m_D2dWndDepMinuteBar1999999.m_limitDnPr = des[1].m_cl;
-                    ptr->m_D2dWndDepMinuteBar1999999.m_volMax = des[0].m_vol;
+                    ptr->m_D2dWndDepTimeSharingWMPAINT1999999.m_vecIntMinuteBar.reserve(240);
+                    ptr->m_D2dWndDepTimeSharingWMPAINT1999999.m_preCl = des[0].m_cl;
+                    ptr->m_D2dWndDepTimeSharingWMPAINT1999999.m_limitUpPr = des[1].m_cl;
+                    ptr->m_D2dWndDepTimeSharingWMPAINT1999999.m_limitDnPr = des[1].m_cl;
+                    ptr->m_D2dWndDepTimeSharingWMPAINT1999999.m_volMax = des[0].m_vol;
                     for (auto i { 1 }; i <= 240; ++i) {
-                        ptr->m_D2dWndDepMinuteBar1999999.m_vecMinuteBar.push_back(des[i]);
-                        if (des[i].m_vol > ptr->m_D2dWndDepMinuteBar1999999.m_volMax)
-                            ptr->m_D2dWndDepMinuteBar1999999.m_volMax = des[i].m_vol;
-                        if (des[i].m_cl > ptr->m_D2dWndDepMinuteBar1999999.m_limitUpPr)
-                            ptr->m_D2dWndDepMinuteBar1999999.m_limitUpPr = des[i].m_cl;
-                        if (des[i].m_cl < ptr->m_D2dWndDepMinuteBar1999999.m_limitDnPr)
-                            ptr->m_D2dWndDepMinuteBar1999999.m_limitDnPr = des[i].m_cl;
+                        ptr->m_D2dWndDepTimeSharingWMPAINT1999999.m_vecIntMinuteBar.push_back(des[i]);
+                        if (des[i].m_vol > ptr->m_D2dWndDepTimeSharingWMPAINT1999999.m_volMax)
+                            ptr->m_D2dWndDepTimeSharingWMPAINT1999999.m_volMax = des[i].m_vol;
+                        if (des[i].m_cl > ptr->m_D2dWndDepTimeSharingWMPAINT1999999.m_limitUpPr)
+                            ptr->m_D2dWndDepTimeSharingWMPAINT1999999.m_limitUpPr = des[i].m_cl;
+                        if (des[i].m_cl < ptr->m_D2dWndDepTimeSharingWMPAINT1999999.m_limitDnPr)
+                            ptr->m_D2dWndDepTimeSharingWMPAINT1999999.m_limitDnPr = des[i].m_cl;
                     }
-                    int32_t temp = ptr->m_D2dWndDepMinuteBar1999999.m_limitUpPr - des[0].m_cl;
-                    if ((des[0].m_cl - ptr->m_D2dWndDepMinuteBar1999999.m_limitDnPr) > temp) {
-                        temp = des[0].m_cl - ptr->m_D2dWndDepMinuteBar1999999.m_limitDnPr;
+                    int32_t temp = ptr->m_D2dWndDepTimeSharingWMPAINT1999999.m_limitUpPr - des[0].m_cl;
+                    if ((des[0].m_cl - ptr->m_D2dWndDepTimeSharingWMPAINT1999999.m_limitDnPr) > temp) {
+                        temp = des[0].m_cl - ptr->m_D2dWndDepTimeSharingWMPAINT1999999.m_limitDnPr;
                     }
                     temp += 100;
-                    ptr->m_D2dWndDepMinuteBar1999999.m_limitUpPr = ptr->m_D2dWndDepMinuteBar1999999.m_preCl + temp;
-                    ptr->m_D2dWndDepMinuteBar1999999.m_limitDnPr = ptr->m_D2dWndDepMinuteBar1999999.m_preCl - temp;
-                    ptr->m_D2dWndDepMinuteBar1999999.m_volMax += 0.1 * ptr->m_D2dWndDepMinuteBar1999999.m_volMax;
+                    ptr->m_D2dWndDepTimeSharingWMPAINT1999999.m_limitUpPr = ptr->m_D2dWndDepTimeSharingWMPAINT1999999.m_preCl + temp;
+                    ptr->m_D2dWndDepTimeSharingWMPAINT1999999.m_limitDnPr = ptr->m_D2dWndDepTimeSharingWMPAINT1999999.m_preCl - temp;
+                    ptr->m_D2dWndDepTimeSharingWMPAINT1999999.m_volMax += 0.1 * ptr->m_D2dWndDepTimeSharingWMPAINT1999999.m_volMax;
+                    ptr->m_D2dWndDepTimeSharingWMPAINT1999999.m_vecIntMinuteBar.swap(des);
+                    ptr->m_D2dWndDepTimeSharingWMPAINT1999999.m_d2dWndDep = &(ptr->m_D2dWndDep);
                 }
             });
         }
@@ -93,35 +95,21 @@ LRESULT CALLBACK D2dWndDepMain::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPA
         // All painting occurs here, between BeginPaint and EndPaint.
         ptr->m_D2dWndDep.m_pD2D1HwndRenderTarget->Clear(D2D1::ColorF(D2D1::ColorF::White));
         if (false) {
-            QILD2D::D2dWndDepTimeSharing::WMPAINT op;
-            op.m_preCl = ptr->m_D2dWndDepMinuteBar1999999.m_preCl;
-            op.m_limitUpPr = ptr->m_D2dWndDepMinuteBar1999999.m_limitUpPr;
-            op.m_limitDnPr = ptr->m_D2dWndDepMinuteBar1999999.m_limitDnPr;
-            op.m_volMax = ptr->m_D2dWndDepMinuteBar1999999.m_volMax;
-            op.m_xStart = 0;
-            op.m_yStart = 0;
-            op.m_xWidth = (rc.right - rc.left);
-            op.m_yHeight = (rc.bottom - rc.top);
-            op.m_d2dWndDep = &(ptr->m_D2dWndDep);
-            op.m_vecIntMinuteBar = &(ptr->m_D2dWndDepMinuteBar1999999.m_vecMinuteBar);
-            op.operator()();
+            ptr->m_D2dWndDepTimeSharingWMPAINT1999999.m_xStart = 0;
+            ptr->m_D2dWndDepTimeSharingWMPAINT1999999.m_yStart = 0;
+            ptr->m_D2dWndDepTimeSharingWMPAINT1999999.m_xWidth = (rc.right - rc.left);
+            ptr->m_D2dWndDepTimeSharingWMPAINT1999999.m_yHeight = (rc.bottom - rc.top);
+            ptr->m_D2dWndDepTimeSharingWMPAINT1999999.operator()();
         } else {
             int32_t nVert = 3; // 垂直
             int32_t nHorz = 4; // 水平
             for (int32_t i { 0 }; i < nHorz; ++i) {
                 for (int32_t j { 0 }; j < nVert; ++j) {
-                    QILD2D::D2dWndDepTimeSharing::WMPAINT op;
-                    op.m_preCl = ptr->m_D2dWndDepMinuteBar1999999.m_preCl;
-                    op.m_limitUpPr = ptr->m_D2dWndDepMinuteBar1999999.m_limitUpPr;
-                    op.m_limitDnPr = ptr->m_D2dWndDepMinuteBar1999999.m_limitDnPr;
-                    op.m_volMax = ptr->m_D2dWndDepMinuteBar1999999.m_volMax;
-                    op.m_xStart = 0 + i * (rc.right - rc.left) / nHorz;
-                    op.m_yStart = 0 + j * (rc.bottom - rc.top) / nVert;
-                    op.m_xWidth = (rc.right - rc.left) / nHorz;
-                    op.m_yHeight = (rc.bottom - rc.top) / nVert;
-                    op.m_d2dWndDep = &(ptr->m_D2dWndDep);
-                    op.m_vecIntMinuteBar = &(ptr->m_D2dWndDepMinuteBar1999999.m_vecMinuteBar);
-                    op.operator()();
+                    ptr->m_D2dWndDepTimeSharingWMPAINT1999999.m_xStart = 0 + i * (rc.right - rc.left) / nHorz;
+                    ptr->m_D2dWndDepTimeSharingWMPAINT1999999.m_yStart = 0 + j * (rc.bottom - rc.top) / nVert;
+                    ptr->m_D2dWndDepTimeSharingWMPAINT1999999.m_xWidth = (rc.right - rc.left) / nHorz;
+                    ptr->m_D2dWndDepTimeSharingWMPAINT1999999.m_yHeight = (rc.bottom - rc.top) / nVert;
+                    ptr->m_D2dWndDepTimeSharingWMPAINT1999999.operator()();
                 }
             }
         }

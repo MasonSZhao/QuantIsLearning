@@ -30,25 +30,25 @@ void D2dWndDepTimeSharing::WMPAINT::operator()()
     if (true) {
         int32_t limitUpDnPr = m_limitUpPr - m_limitDnPr;
         {
-            D2D1_POINT_2F p0 = { m_xStart + widthLeft, m_yStart + ((float)(m_limitUpPr - (*m_vecIntMinuteBar)[0].m_op) / (float)limitUpDnPr) * heightPr };
-            D2D1_POINT_2F p1 = { m_xStart + widthLeft + widthPrVol / 240.f, m_yStart + ((float)(m_limitUpPr - (*m_vecIntMinuteBar)[0].m_cl) / (float)limitUpDnPr) * heightPr };
+            D2D1_POINT_2F p0 = { m_xStart + widthLeft, m_yStart + ((float)(m_limitUpPr - m_vecIntMinuteBar[0].m_op) / (float)limitUpDnPr) * heightPr };
+            D2D1_POINT_2F p1 = { m_xStart + widthLeft + widthPrVol / 240.f, m_yStart + ((float)(m_limitUpPr - m_vecIntMinuteBar[0].m_cl) / (float)limitUpDnPr) * heightPr };
             m_d2dWndDep->m_pD2D1HwndRenderTarget->DrawLine(p0, p1, m_d2dWndDep->m_pD2DSolidColorBrushBlack, 1);
             for (size_t i { 1 }; i <= 239; ++i) {
                 p0 = p1;
                 p1.x += widthPrVol / 240.f;
-                p1.y = m_yStart + ((float)(m_limitUpPr - (*m_vecIntMinuteBar)[i].m_cl) / (float)limitUpDnPr) * heightPr;
+                p1.y = m_yStart + ((float)(m_limitUpPr - m_vecIntMinuteBar[i].m_cl) / (float)limitUpDnPr) * heightPr;
                 m_d2dWndDep->m_pD2D1HwndRenderTarget->DrawLine(p0, p1, m_d2dWndDep->m_pD2DSolidColorBrushBlack, 1);
             }
         }
     }
     if (true) {
-        D2D1_POINT_2F p0 = { m_xStart + widthLeft, m_yStart + heightPr + (1 - ((float)(*m_vecIntMinuteBar)[0].m_vol) / (float)m_volMax) * heightVol };
+        D2D1_POINT_2F p0 = { m_xStart + widthLeft, m_yStart + heightPr + (1 - ((float)m_vecIntMinuteBar[0].m_vol) / (float)m_volMax) * heightVol };
         D2D1_POINT_2F p1 = { m_xStart + widthLeft, m_yStart + heightPr + heightVol };
         m_d2dWndDep->m_pD2D1HwndRenderTarget->DrawLine(p0, p1, m_d2dWndDep->m_pD2DSolidColorBrushBlack, 1);
         for (size_t i { 1 }; i <= 239; ++i) {
             p0.x += widthPrVol / 240.f;
             p1.x += widthPrVol / 240.f;
-            p0.y = m_yStart + heightPr + (1 - ((float)(*m_vecIntMinuteBar)[i].m_vol) / (float)m_volMax) * heightVol;
+            p0.y = m_yStart + heightPr + (1 - ((float)m_vecIntMinuteBar[i].m_vol) / (float)m_volMax) * heightVol;
             m_d2dWndDep->m_pD2D1HwndRenderTarget->DrawLine(p0, p1, m_d2dWndDep->m_pD2DSolidColorBrushBlack, 1);
         }
     }

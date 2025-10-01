@@ -22,7 +22,7 @@ struct D2dWndDepLimitPeriodTimeSharing {
     int32_t m_nVert = 3; // 垂直
     int32_t m_nHorz = 4; // 水平
 
-    std::vector<std::vector<QILD2D::D2dWndDepTimeSharing::WMPAINT>> m_vecVecD2dWndDepTimeSharing;
+    std::vector<std::vector<std::vector<QILD2D::D2dWndDepTimeSharing::WMPAINT>>> m_vecVecVecD2dWndDepTimeSharing;
 
     D2dWndDep m_D2dWndDep;
     static LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);

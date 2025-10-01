@@ -17,7 +17,7 @@ struct D2dWndDepTimeSharing {
         int32_t m_limitUpPr;
         int32_t m_limitDnPr;
         int64_t m_volMax;
-        std::vector<QILHOST::IntMinuteBar>* m_vecIntMinuteBar;
+        std::vector<QILHOST::IntMinuteBar> m_vecIntMinuteBar;
         float m_xStart;
         float m_yStart;
         float m_xWidth;
