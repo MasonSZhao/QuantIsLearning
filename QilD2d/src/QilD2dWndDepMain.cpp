@@ -31,8 +31,25 @@ LRESULT CALLBACK D2dWndDepMain::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPA
     case WM_CREATE: {
         QILD2D::D2dWndDepMain* ptr = new QILD2D::D2dWndDepMain;
         SetWindowLongPtr(hWnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(ptr));
+        HRESULT hr = S_OK;
+        if (SUCCEEDED(hr)) {
+            RECT rc;
+            GetClientRect(hWnd, &rc);
+            hr = QILD2D::D2dWndIndep::s_pD2D1Factory->CreateHwndRenderTarget(D2D1::RenderTargetProperties(), D2D1::HwndRenderTargetProperties(hWnd, D2D1::SizeU(rc.right, rc.bottom)), &((*ptr).m_D2dWndDep.m_pD2D1HwndRenderTarget));
+        }
+        if (SUCCEEDED(hr)) {
+            hr = (*ptr).m_D2dWndDep.m_pD2D1HwndRenderTarget->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::Black), &((*ptr).m_D2dWndDep.m_pD2DSolidColorBrushBlack));
+            hr = (*ptr).m_D2dWndDep.m_pD2D1HwndRenderTarget->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::LightGray), &((*ptr).m_D2dWndDep.m_pD2DSolidColorBrushLightGray));
+            hr = (*ptr).m_D2dWndDep.m_pD2D1HwndRenderTarget->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::Gray), &((*ptr).m_D2dWndDep.m_pD2DSolidColorBrushGray));
+            hr = (*ptr).m_D2dWndDep.m_pD2D1HwndRenderTarget->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::Red), &((*ptr).m_D2dWndDep.m_pD2DSolidColorBrushRed));
+            hr = (*ptr).m_D2dWndDep.m_pD2D1HwndRenderTarget->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::Green), &((*ptr).m_D2dWndDep.m_pD2DSolidColorBrushGreen));
+        }
+        if (!SUCCEEDED(hr)) {
+            delete ptr;
+            ptr = nullptr;
+        }
         // 并行线程
-        if (true) {
+        if (SUCCEEDED(hr)) {
             std::vector<std::jthread> vecThread;
             // 并行线程 上证指数分时数据
             vecThread.emplace_back([&]() {
@@ -64,23 +81,6 @@ LRESULT CALLBACK D2dWndDepMain::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPA
                     ptr->m_D2dWndDepTimeSharingWMPAINT1999999.m_d2dWndDep = &(ptr->m_D2dWndDep);
                 }
             });
-        }
-        HRESULT hr = S_OK;
-        if (SUCCEEDED(hr)) {
-            RECT rc;
-            GetClientRect(hWnd, &rc);
-            hr = QILD2D::D2dWndIndep::s_pD2D1Factory->CreateHwndRenderTarget(D2D1::RenderTargetProperties(), D2D1::HwndRenderTargetProperties(hWnd, D2D1::SizeU(rc.right, rc.bottom)), &((*ptr).m_D2dWndDep.m_pD2D1HwndRenderTarget));
-        }
-        if (SUCCEEDED(hr)) {
-            hr = (*ptr).m_D2dWndDep.m_pD2D1HwndRenderTarget->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::Black), &((*ptr).m_D2dWndDep.m_pD2DSolidColorBrushBlack));
-            hr = (*ptr).m_D2dWndDep.m_pD2D1HwndRenderTarget->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::LightGray), &((*ptr).m_D2dWndDep.m_pD2DSolidColorBrushLightGray));
-            hr = (*ptr).m_D2dWndDep.m_pD2D1HwndRenderTarget->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::Gray), &((*ptr).m_D2dWndDep.m_pD2DSolidColorBrushGray));
-            hr = (*ptr).m_D2dWndDep.m_pD2D1HwndRenderTarget->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::Red), &((*ptr).m_D2dWndDep.m_pD2DSolidColorBrushRed));
-            hr = (*ptr).m_D2dWndDep.m_pD2D1HwndRenderTarget->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::Green), &((*ptr).m_D2dWndDep.m_pD2DSolidColorBrushGreen));
-        }
-        if (!SUCCEEDED(hr)) {
-            delete ptr;
-            ptr = nullptr;
         }
         return 1;
     }
@@ -150,6 +150,20 @@ LRESULT CALLBACK D2dWndDepMain::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPA
             break;
         }
         case WNDMAIN_HMENU_FEATURE_LIMITPERIOD300TIMESHARING: {
+            HWND hWndLimitPeriodText = CreateWindow(
+                TEXT("WndLimitPeriodTimeSharing"), // 窗口类注册名称
+                TEXT("创业板周期"), // 窗口标题
+                WS_VISIBLE | WS_OVERLAPPEDWINDOW, // 标准交互
+                CW_USEDEFAULT, // 初始x坐标
+                CW_USEDEFAULT, // 初始y坐标
+                CW_USEDEFAULT, // 初始x方向尺寸
+                CW_USEDEFAULT, // 初始y方向尺寸
+                hWnd, // 父窗口句柄
+                NULL /* Must be NULL! */, // 主窗口菜单句柄、子窗口窗口标识（整形、父窗口内唯一）
+                GetModuleHandle(NULL), // 程序实例句柄
+                NULL // 窗口创建参数
+            );
+            QILD2D::D2dWndDepLimitPeriodTimeSharing* ptr = reinterpret_cast<QILD2D::D2dWndDepLimitPeriodTimeSharing*>(static_cast<LONG_PTR>(GetWindowLongPtr(hWnd, GWLP_USERDATA)));
             break;
         }
         default:

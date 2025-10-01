@@ -197,9 +197,11 @@ SCENARIO("Limit Period 300", "[Limit Period 300]")
         }
     }
     for (auto& e : QILHOST::TimeSeriesCrossSector::s_vecVecIntLimitUp) {
-        std::sort(e.begin(), e.end(), [](const QILHOST::IntLimitUpDn& a, const QILHOST::IntLimitUpDn& b) {
-            return a.m_count > b.m_count;
-        });
+        if (!e.empty()) {
+            std::sort(e.begin(), e.end(), [](const QILHOST::IntLimitUpDn& a, const QILHOST::IntLimitUpDn& b) {
+                return a.m_count > b.m_count;
+            });
+        }
     }
     if (true) {
         std::string empty { "          " };

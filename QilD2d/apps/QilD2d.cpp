@@ -105,6 +105,20 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
             return 1;
         }
     }
+    {
+        WNDCLASS wc {};
+        wc.lpfnWndProc = QILD2D::D2dWndDepLimitPeriodTimeSharing::WndProc;
+        wc.cbClsExtra = 0;
+        wc.cbWndExtra = sizeof(LONG_PTR);
+        wc.hInstance = hInstance;
+        wc.hbrBackground = NULL;
+        wc.hCursor = LoadCursor(hInstance, IDI_APPLICATION);
+        wc.lpszClassName = TEXT("WndLimitPeriodTimeSharing");
+        if (!RegisterClass(&wc)) {
+            MessageBox(NULL, TEXT("Call to RegisterClass failed!"), TEXT("量化正在学习"), NULL);
+            return 1;
+        }
+    }
 
     // MENU
     HMENU hMenu = CreateMenu();

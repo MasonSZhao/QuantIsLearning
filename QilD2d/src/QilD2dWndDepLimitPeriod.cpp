@@ -40,8 +40,25 @@ LRESULT CALLBACK D2dWndDepLimitPeriodText::WndProc(HWND hWnd, UINT uMsg, WPARAM 
     case WM_CREATE: {
         QILD2D::D2dWndDepLimitPeriodText* ptr = new QILD2D::D2dWndDepLimitPeriodText;
         SetWindowLongPtr(hWnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(ptr));
+        HRESULT hr = S_OK;
+        if (SUCCEEDED(hr)) {
+            RECT rc;
+            GetClientRect(hWnd, &rc);
+            hr = QILD2D::D2dWndIndep::s_pD2D1Factory->CreateHwndRenderTarget(D2D1::RenderTargetProperties(), D2D1::HwndRenderTargetProperties(hWnd, D2D1::SizeU(rc.right, rc.bottom)), &((*ptr).m_D2dWndDep.m_pD2D1HwndRenderTarget));
+        }
+        if (SUCCEEDED(hr)) {
+            hr = (*ptr).m_D2dWndDep.m_pD2D1HwndRenderTarget->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::Black), &((*ptr).m_D2dWndDep.m_pD2DSolidColorBrushBlack));
+            hr = (*ptr).m_D2dWndDep.m_pD2D1HwndRenderTarget->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::LightGray), &((*ptr).m_D2dWndDep.m_pD2DSolidColorBrushLightGray));
+            hr = (*ptr).m_D2dWndDep.m_pD2D1HwndRenderTarget->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::Gray), &((*ptr).m_D2dWndDep.m_pD2DSolidColorBrushGray));
+            hr = (*ptr).m_D2dWndDep.m_pD2D1HwndRenderTarget->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::Red), &((*ptr).m_D2dWndDep.m_pD2DSolidColorBrushRed));
+            hr = (*ptr).m_D2dWndDep.m_pD2D1HwndRenderTarget->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::Green), &((*ptr).m_D2dWndDep.m_pD2DSolidColorBrushGreen));
+        }
+        if (!SUCCEEDED(hr)) {
+            delete ptr;
+            ptr = nullptr;
+        }
         // 并行线程
-        if (true) {
+        if (SUCCEEDED(hr)) {
             std::vector<std::jthread> vecThread;
             // 并行线程
             vecThread.emplace_back([&]() {
@@ -146,9 +163,11 @@ LRESULT CALLBACK D2dWndDepLimitPeriodText::WndProc(HWND hWnd, UINT uMsg, WPARAM 
                     }
                 }
                 for (auto& e : QILHOST::TimeSeriesCrossSector::s_vecVecIntLimitUp) {
-                    std::sort(e.begin(), e.end(), [](const QILHOST::IntLimitUpDn& a, const QILHOST::IntLimitUpDn& b) {
-                        return a.m_count > b.m_count;
-                    });
+                    if (!e.empty()) {
+                        std::sort(e.begin(), e.end(), [](const QILHOST::IntLimitUpDn& a, const QILHOST::IntLimitUpDn& b) {
+                            return a.m_count > b.m_count;
+                        });
+                    }
                 }
                 if (true) {
                     std::string empty { "          " };
@@ -176,23 +195,6 @@ LRESULT CALLBACK D2dWndDepLimitPeriodText::WndProc(HWND hWnd, UINT uMsg, WPARAM 
                     }
                 }
             });
-        }
-        HRESULT hr = S_OK;
-        if (SUCCEEDED(hr)) {
-            RECT rc;
-            GetClientRect(hWnd, &rc);
-            hr = QILD2D::D2dWndIndep::s_pD2D1Factory->CreateHwndRenderTarget(D2D1::RenderTargetProperties(), D2D1::HwndRenderTargetProperties(hWnd, D2D1::SizeU(rc.right, rc.bottom)), &((*ptr).m_D2dWndDep.m_pD2D1HwndRenderTarget));
-        }
-        if (SUCCEEDED(hr)) {
-            hr = (*ptr).m_D2dWndDep.m_pD2D1HwndRenderTarget->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::Black), &((*ptr).m_D2dWndDep.m_pD2DSolidColorBrushBlack));
-            hr = (*ptr).m_D2dWndDep.m_pD2D1HwndRenderTarget->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::LightGray), &((*ptr).m_D2dWndDep.m_pD2DSolidColorBrushLightGray));
-            hr = (*ptr).m_D2dWndDep.m_pD2D1HwndRenderTarget->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::Gray), &((*ptr).m_D2dWndDep.m_pD2DSolidColorBrushGray));
-            hr = (*ptr).m_D2dWndDep.m_pD2D1HwndRenderTarget->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::Red), &((*ptr).m_D2dWndDep.m_pD2DSolidColorBrushRed));
-            hr = (*ptr).m_D2dWndDep.m_pD2D1HwndRenderTarget->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::Green), &((*ptr).m_D2dWndDep.m_pD2DSolidColorBrushGreen));
-        }
-        if (!SUCCEEDED(hr)) {
-            delete ptr;
-            ptr = nullptr;
         }
         return 1;
     }
@@ -386,6 +388,282 @@ LRESULT CALLBACK D2dWndDepLimitPeriodText::WndProc(HWND hWnd, UINT uMsg, WPARAM 
         SetScrollInfo(hWnd, SB_VERT, &si, TRUE);
         GetScrollInfo(hWnd, SB_VERT, &si);
         InvalidateRect(hWnd, NULL, FALSE);
+        return 0;
+    }
+    default:
+        break;
+    }
+    return DefWindowProc(hWnd, uMsg, wParam, lParam);
+}
+
+LRESULT CALLBACK D2dWndDepLimitPeriodTimeSharing::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+{
+    switch (uMsg) {
+    case WM_ERASEBKGND: {
+        return true /*avoid flicker*/;
+    }
+    case WM_CLOSE: {
+        QILD2D::D2dWndDepLimitPeriodTimeSharing* ptr = reinterpret_cast<QILD2D::D2dWndDepLimitPeriodTimeSharing*>(static_cast<LONG_PTR>(GetWindowLongPtr(hWnd, GWLP_USERDATA)));
+        QILD2D::D2dWndIndep::SafeRelease(&(ptr->m_D2dWndDep.m_pD2DSolidColorBrushGreen));
+        QILD2D::D2dWndIndep::SafeRelease(&(ptr->m_D2dWndDep.m_pD2DSolidColorBrushRed));
+        QILD2D::D2dWndIndep::SafeRelease(&(ptr->m_D2dWndDep.m_pD2DSolidColorBrushGray));
+        QILD2D::D2dWndIndep::SafeRelease(&(ptr->m_D2dWndDep.m_pD2DSolidColorBrushLightGray));
+        QILD2D::D2dWndIndep::SafeRelease(&(ptr->m_D2dWndDep.m_pD2DSolidColorBrushBlack));
+        QILD2D::D2dWndIndep::SafeRelease(&(ptr->m_D2dWndDep.m_pD2D1HwndRenderTarget));
+        delete ptr;
+        ptr = nullptr;
+        DestroyWindow(hWnd);
+        return 0;
+    }
+    case WM_CREATE: {
+        QILD2D::D2dWndDepLimitPeriodTimeSharing* ptr = new QILD2D::D2dWndDepLimitPeriodTimeSharing;
+        SetWindowLongPtr(hWnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(ptr));
+        HRESULT hr = S_OK;
+        if (SUCCEEDED(hr)) {
+            RECT rc;
+            GetClientRect(hWnd, &rc);
+            hr = QILD2D::D2dWndIndep::s_pD2D1Factory->CreateHwndRenderTarget(D2D1::RenderTargetProperties(), D2D1::HwndRenderTargetProperties(hWnd, D2D1::SizeU(rc.right, rc.bottom)), &((*ptr).m_D2dWndDep.m_pD2D1HwndRenderTarget));
+        }
+        if (SUCCEEDED(hr)) {
+            hr = (*ptr).m_D2dWndDep.m_pD2D1HwndRenderTarget->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::Black), &((*ptr).m_D2dWndDep.m_pD2DSolidColorBrushBlack));
+            hr = (*ptr).m_D2dWndDep.m_pD2D1HwndRenderTarget->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::LightGray), &((*ptr).m_D2dWndDep.m_pD2DSolidColorBrushLightGray));
+            hr = (*ptr).m_D2dWndDep.m_pD2D1HwndRenderTarget->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::Gray), &((*ptr).m_D2dWndDep.m_pD2DSolidColorBrushGray));
+            hr = (*ptr).m_D2dWndDep.m_pD2D1HwndRenderTarget->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::Red), &((*ptr).m_D2dWndDep.m_pD2DSolidColorBrushRed));
+            hr = (*ptr).m_D2dWndDep.m_pD2D1HwndRenderTarget->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::Green), &((*ptr).m_D2dWndDep.m_pD2DSolidColorBrushGreen));
+        }
+        if (!SUCCEEDED(hr)) {
+            delete ptr;
+            ptr = nullptr;
+        }
+        // 并行线程
+        if (SUCCEEDED(hr)) {
+            {
+                {
+                    QILHOST::TD::FileVecMinuteBar::lut1999999();
+                    int32_t startDate;
+                    {
+                        std::vector<QILHOST::IntMinuteBar> vecIntMinuteBar { QILHOST::TD::FileVecMinuteBar::int3264("1999999", 1, false) };
+                        startDate = vecIntMinuteBar[0].m_date;
+                    }
+                    {
+                        time_t time_tTime = time(nullptr);
+                        tm tmTime;
+                        localtime_s(&tmTime, &time_tTime);
+                        std::vector<QILHOST::TD::FltDayBar> vecFltDayBar { QILHOST::TD::FileVecDayBar::flt("1999999", (tmTime.tm_year + 1900 - startDate / 10000 + 1) * 365, true) };
+                        for (auto& e : vecFltDayBar) {
+                            if (e.m_date >= startDate) {
+                                QILHOST::TimeSeriesCrossSector::s_vecDate.push_back(e.m_date);
+                            }
+                        }
+                    }
+                    QILHOST::TimeSeriesCrossSector::s_vecVecIntLimitUp.resize(QILHOST::TimeSeriesCrossSector::s_vecDate.size());
+                }
+                QILHOST::TD::FileVecExCode360::sz(false, true);
+                {
+                    QILHOST::CrossSectorTimeSeries::s_vecVecIntDayBar.resize(QILHOST::VecExCode360::s_vecExCode.size());
+                }
+                {
+                    size_t idxPara { 0 };
+                    std::mutex mutIdx;
+                    std::vector<std::jthread> vecThread;
+                    for (auto idxThread { 0 }; idxThread < std::thread::hardware_concurrency() / 2; ++idxThread) {
+                        vecThread.emplace_back([&]() {
+                            int32_t maxCount { 0 };
+                            std::vector<std::vector<QILHOST::IntLimitUpDn>> vecVecIntLimitUp;
+                            vecVecIntLimitUp.resize(QILHOST::TimeSeriesCrossSector::s_vecDate.size());
+                            while (true) {
+                                size_t idxLocal;
+                                {
+                                    std::unique_lock<std::mutex> lk(mutIdx);
+                                    idxLocal = idxPara;
+                                    if (!(idxLocal < QILHOST::VecExCode360::s_vecExCode.size())) {
+                                        break;
+                                    }
+                                    // std::cout << idxPara << std::endl;
+                                    ++idxPara;
+                                }
+                                {
+                                    std::vector<QILHOST::IntDateBar> vecIntDayBar { QILHOST::TD::FileVecDayBar::int3264(QILHOST::VecExCode360::s_vecExCode[idxLocal].data(), QILHOST::TimeSeriesCrossSector::s_vecDate.size() + 30, true) };
+                                    std::deque<QILHOST::IntLimitUpDn> deqLimit;
+                                    std::deque<int32_t> deqDate;
+                                    for (size_t idxVecIntDayBar { 1 }; idxVecIntDayBar < vecIntDayBar.size(); ++idxVecIntDayBar) {
+                                        auto uplimitType = 100 + QILHOST::TechLimitType0::int32(QILHOST::VecExCode360::s_vecExCode[idxLocal].data());
+                                        if (QILHOST::TechLimitCur1::int32(vecIntDayBar[idxVecIntDayBar - 1].m_cl, uplimitType) == vecIntDayBar[idxVecIntDayBar].m_cl) {
+                                            QILHOST::IntLimitUpDn temp;
+                                            temp.m_preCl = vecIntDayBar[idxVecIntDayBar - 1].m_cl;
+                                            temp.m_idxVecExCode = idxLocal;
+                                            temp.m_idxVecIntDayBar = idxVecIntDayBar;
+                                            if (deqLimit.empty()) {
+                                                temp.m_count = 1;
+                                            } else {
+                                                if (deqLimit.back().m_idxVecIntDayBar + 1 == idxVecIntDayBar) {
+                                                    temp.m_count = deqLimit.back().m_count + 1;
+                                                } else {
+                                                    temp.m_count = 1;
+                                                }
+                                            }
+                                            deqLimit.push_back(temp);
+                                            deqDate.push_back(vecIntDayBar[idxVecIntDayBar].m_date);
+                                        }
+                                    }
+                                    while (!deqDate.empty()) {
+                                        if (deqDate.front() < QILHOST::TimeSeriesCrossSector::s_vecDate.front()) {
+                                            deqDate.pop_front();
+                                            deqLimit.pop_front();
+                                        } else {
+                                            break;
+                                        }
+                                    }
+                                    for (size_t idxVecDate { 0 }; idxVecDate < QILHOST::TimeSeriesCrossSector::s_vecDate.size(); ++idxVecDate) {
+                                        if (deqDate.empty()) {
+                                            break;
+                                        } else {
+                                            if (deqDate.front() == QILHOST::TimeSeriesCrossSector::s_vecDate[idxVecDate]) {
+                                                if (deqLimit.front().m_count > maxCount) {
+                                                    maxCount = deqLimit.front().m_count;
+                                                }
+                                                vecVecIntLimitUp[idxVecDate].push_back(deqLimit.front());
+                                                deqLimit.pop_front();
+                                                deqDate.pop_front();
+                                            } else {
+                                                continue;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            {
+                                std::unique_lock<std::mutex> lk(mutIdx);
+                                for (size_t idxVecVecIntLimitUp { 0 }; idxVecVecIntLimitUp < vecVecIntLimitUp.size(); ++idxVecVecIntLimitUp) {
+                                    for (const auto& e : vecVecIntLimitUp[idxVecVecIntLimitUp]) {
+                                        QILHOST::TimeSeriesCrossSector::s_vecVecIntLimitUp[idxVecVecIntLimitUp].push_back(e);
+                                    }
+                                }
+                            }
+                        });
+                    }
+                }
+                int32_t maxCount { 0 };
+                for (auto& e : QILHOST::TimeSeriesCrossSector::s_vecVecIntLimitUp) {
+                    if (!e.empty()) {
+                        std::sort(e.begin(), e.end(), [](const QILHOST::IntLimitUpDn& a, const QILHOST::IntLimitUpDn& b) {
+                            return a.m_count > b.m_count;
+                        });
+                        if (e.front().m_count > maxCount) {
+                            maxCount = e.front().m_count;
+                        }
+                    }
+                }
+                ptr->m_vecVecVecD2dWndDepTimeSharing.resize(QILHOST::TimeSeriesCrossSector::s_vecDate.size());
+                for (auto& e : ptr->m_vecVecVecD2dWndDepTimeSharing) {
+                    // [][n] 为n板
+                    // [][...] 以此类推
+                    // [][1] 为首板
+                    // [][0] 为空
+                    e.resize(maxCount + 2);
+                }
+                {
+                    size_t idxPara { 0 };
+                    std::mutex mutIdx;
+                    std::vector<std::jthread> vecThread;
+                    for (auto idxThread { 0 }; idxThread < std::thread::hardware_concurrency() / 2; ++idxThread) {
+                        vecThread.emplace_back([&]() {
+                            while (true) {
+                                size_t idxLocal;
+                                {
+                                    std::unique_lock<std::mutex> lk(mutIdx);
+                                    idxLocal = idxPara;
+                                    if (!(idxLocal < QILHOST::TimeSeriesCrossSector::s_vecVecIntLimitUp.size())) {
+                                        break;
+                                    }
+                                    // std::cout << idxPara << std::endl;
+                                    ++idxPara;
+                                }
+                                ptrdiff_t idxDate = -1;
+                                if (QILHOST::TD::FileVecMinuteBar::s_lutDate1999999.end() != QILHOST::TD::FileVecMinuteBar::s_lutDate1999999.find(QILHOST::TimeSeriesCrossSector::s_vecDate[idxLocal])) {
+                                    // found
+                                    idxDate = QILHOST::TD::FileVecMinuteBar::s_lutDate1999999[QILHOST::TimeSeriesCrossSector::s_vecDate[idxLocal]];
+                                } else {
+                                    // not found
+                                }
+                                for (const auto& e : QILHOST::TimeSeriesCrossSector::s_vecVecIntLimitUp[idxLocal]) {
+                                    std::vector<QILHOST::IntMinuteBar> vecIntMinuteBar;
+                                    if (idxDate >= 0) {
+                                        if (false) {
+                                            std::string str { "found\n" };
+                                            WriteConsole(GetStdHandle(STD_OUTPUT_HANDLE), str.c_str(), str.size(), NULL, NULL);
+                                        }
+                                        vecIntMinuteBar = QILHOST::TD::FileVecMinuteBar::int3264Date(
+                                            QILHOST::VecExCode360::s_vecExCode[e.m_idxVecExCode].data(),
+                                            240,
+                                            QILHOST::TimeSeriesCrossSector::s_vecDate[idxLocal],
+                                            QILHOST::TD::FileVecMinuteBar::s_vecDate1999999.size() * 240,
+                                            QILHOST::TD::FileVecMinuteBar::s_lutDate1999999[QILHOST::TimeSeriesCrossSector::s_vecDate[idxLocal]] * 240);
+                                    } else {
+                                        if (false) {
+                                            std::string str { "not found\n" };
+                                            WriteConsole(GetStdHandle(STD_OUTPUT_HANDLE), str.c_str(), str.size(), NULL, NULL);
+                                        }
+                                        vecIntMinuteBar = QILHOST::TD::FileVecMinuteBar::int3264Date(
+                                            QILHOST::VecExCode360::s_vecExCode[e.m_idxVecExCode].data(),
+                                            240,
+                                            QILHOST::TimeSeriesCrossSector::s_vecDate[idxLocal]);
+                                    }
+                                    int64_t volMax = vecIntMinuteBar[0].m_vol;
+                                    for (const auto& intMinuteBar : vecIntMinuteBar) {
+                                        if (intMinuteBar.m_vol > volMax) {
+                                            volMax = intMinuteBar.m_vol;
+                                        }
+                                    }
+                                    QILD2D::D2dWndDepTimeSharing::WMPAINT op;
+                                    op.m_preCl = e.m_preCl;
+                                    auto uplimitType = QILHOST::TechLimitType0::int32(QILHOST::VecExCode360::s_vecExCode[e.m_idxVecExCode].data());
+                                    op.m_limitUpPr = QILHOST::TechLimitCur1::int32(e.m_preCl, 100 + uplimitType);
+                                    op.m_limitDnPr = QILHOST::TechLimitCur1::int32(e.m_preCl, 100 - uplimitType);
+                                    op.m_volMax = volMax;
+                                    op.m_d2dWndDep = &(ptr->m_D2dWndDep);
+                                    op.m_vecIntMinuteBar.swap(vecIntMinuteBar);
+                                    ptr->m_vecVecVecD2dWndDepTimeSharing[idxLocal][e.m_count].push_back(op);
+                                }
+                            }
+                        });
+                    }
+                }
+            }
+        }
+        return 1;
+    }
+    case WM_PAINT: {
+        // PAINTSTRUCT ps;
+        // HDC hDC = BeginPaint(hWnd, &ps);
+        // SetBkMode(hDC, TRANSPARENT);
+        RECT rc;
+        GetClientRect(hWnd, &rc);
+        QILD2D::D2dWndDepLimitPeriodTimeSharing* ptr = reinterpret_cast<QILD2D::D2dWndDepLimitPeriodTimeSharing*>(static_cast<LONG_PTR>(GetWindowLongPtr(hWnd, GWLP_USERDATA)));
+        ptr->m_D2dWndDep.m_pD2D1HwndRenderTarget->BeginDraw();
+        // All painting occurs here, between BeginPaint and EndPaint.
+        ptr->m_D2dWndDep.m_pD2D1HwndRenderTarget->Clear(D2D1::ColorF(D2D1::ColorF::White));
+        for (int32_t i { 0 }; i < ptr->m_nHorz; ++i) {
+            for (int32_t j { 0 }; j < ptr->m_nVert; ++j) {
+                for (auto& vec : ptr->m_vecVecVecD2dWndDepTimeSharing[i]) {
+                    if (vec.size() > j + 1) {
+                        for (auto& op : ptr->m_vecVecVecD2dWndDepTimeSharing[i][j + 1]) {
+                            op.m_xStart = 0 + i * (rc.right - rc.left) / ptr->m_nHorz;
+                            op.m_yStart = 0 + (ptr->m_nVert - j - 1) * (rc.bottom - rc.top) / ptr->m_nVert;
+                            op.m_xWidth = (rc.right - rc.left) / ptr->m_nHorz;
+                            op.m_yHeight = (rc.bottom - rc.top) / ptr->m_nVert;
+                            op.m_d2dWndDep = &(ptr->m_D2dWndDep);
+                            op.operator()();
+                        }
+                    }
+                }
+            }
+        }
+        // FillRect(hDC, &ps.rcPaint, //(HBRUSH)GetStockObject(WHITE_BRUSH));
+        //     CreateSolidBrush(RGB((rand() % (255 + 1)), (rand() % (255 + 1)), (rand() % (255 + 1)))));
+        ptr->m_D2dWndDep.m_pD2D1HwndRenderTarget->EndDraw();
+        // EndPaint(hWnd, &ps);
+        ValidateRect(hWnd, NULL);
         return 0;
     }
     default:
