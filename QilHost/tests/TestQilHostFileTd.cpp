@@ -99,6 +99,7 @@ SCENARIO("Date Read MinuteFile", "[Date Read MinuteFile]")
                 WHEN("Do NOT Have Enough")
                 {
                     if (true) {
+                        // QILHOST::TD::FileVecMinuteBar::lut1999999();
                         std::vector<QILHOST::TD::FltMinuteBar> vecFltMinuteBar = QILHOST::TD::FileVecMinuteBar::fltDate("0399006", 480, QILHOST::TD::FileVecMinuteBar::s_vecDate1999999.back());
                         if (false) {
                             for (size_t i { 0 }; i < vecFltMinuteBar.size(); ++i)
@@ -110,6 +111,7 @@ SCENARIO("Date Read MinuteFile", "[Date Read MinuteFile]")
                 WHEN("Do Have Enough")
                 {
                     if (true) {
+                        // QILHOST::TD::FileVecMinuteBar::lut1999999();
                         std::vector<QILHOST::TD::FltMinuteBar> vecFltMinuteBar = QILHOST::TD::FileVecMinuteBar::fltDate("0399006", 480, QILHOST::TD::FileVecMinuteBar::s_vecDate1999999[QILHOST::TD::FileVecMinuteBar::s_vecDate1999999.size() - 2]);
                         if (false) {
                             for (size_t i { 0 }; i < vecFltMinuteBar.size(); ++i)
@@ -162,6 +164,7 @@ SCENARIO("Date Read MinuteFile", "[Date Read MinuteFile]")
                 WHEN("Do NOT Have Enough")
                 {
                     if (true) {
+                        // QILHOST::TD::FileVecMinuteBar::lut1999999();
                         std::vector<QILHOST::IntMinuteBar> vecIntMinuteBar = QILHOST::TD::FileVecMinuteBar::int3264Date("0399006", 480, QILHOST::TD::FileVecMinuteBar::s_vecDate1999999.back());
                         if (false) {
                             for (size_t i { 0 }; i < vecIntMinuteBar.size(); ++i)
@@ -173,6 +176,7 @@ SCENARIO("Date Read MinuteFile", "[Date Read MinuteFile]")
                 WHEN("Do Have Enough")
                 {
                     if (true) {
+                        // QILHOST::TD::FileVecMinuteBar::lut1999999();
                         std::vector<QILHOST::IntMinuteBar> vecIntMinuteBar = QILHOST::TD::FileVecMinuteBar::int3264Date("0399006", 480, QILHOST::TD::FileVecMinuteBar::s_vecDate1999999[QILHOST::TD::FileVecMinuteBar::s_vecDate1999999.size() - 2]);
                         if (false) {
                             for (size_t i { 0 }; i < vecIntMinuteBar.size(); ++i)

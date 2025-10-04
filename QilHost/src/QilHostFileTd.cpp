@@ -5,6 +5,10 @@
 #include "..\include\QilHostSecurityS.h"
 #include <fstream>
 
+#define SPDLOG_ACTIVE_LEVEL SPDLOG_LEVEL_TRACE // spdlog #define should be in front of SPD #include.
+
+#include <spdlog/spdlog.h> // spdlog #define should be in front of SPD #include.
+
 namespace QILHOST {
 
 namespace TD {
@@ -198,6 +202,7 @@ namespace TD {
                         ifs.read(reinterpret_cast<char*>(&vecFltMinuteBar[0]), leftCount * sizeof(QILHOST::TD::FltMinuteBar));
                     }
                 } else {
+                    SPDLOG_TRACE(std::string { exCode } + " FileVecMinuteBar " + std::to_string(readFromDate) + " do need research.");
                     ifs.seekg(0, std::ios::beg);
                     size_t leftCount = fileCount;
                     while (!ifs.eof()) {

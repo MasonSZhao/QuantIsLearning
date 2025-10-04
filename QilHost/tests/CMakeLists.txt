@@ -3,17 +3,8 @@
 # Set the C++ standard.
 set(CMAKE_CXX_STANDARD 20)
 
-## github: https://github.com/catchorg/Catch2
-#find_package(Catch2 REQUIRED)
-
 include(FetchContent)
-
-FetchContent_Declare(
-	Catch2	
-	GIT_REPOSITORY https://github.com/catchorg/Catch2.git
-	GIT_TAG        v3.10.0
-)
-
+FetchContent_Declare(Catch2	URL https://github.com/catchorg/Catch2/archive/refs/tags/v3.11.0.tar.gz) # GIT_REPOSITORY is painful to fetch when network is indirect, change as you wish.
 FetchContent_MakeAvailable(Catch2)
 
 # Load and run CMake code from a file or module.
