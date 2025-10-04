@@ -166,6 +166,23 @@ LRESULT CALLBACK D2dWndDepMain::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPA
             QILD2D::D2dWndDepLimitPeriodTimeSharing* ptr = reinterpret_cast<QILD2D::D2dWndDepLimitPeriodTimeSharing*>(static_cast<LONG_PTR>(GetWindowLongPtr(hWnd, GWLP_USERDATA)));
             break;
         }
+        case WNDMAIN_HMENU_HELP_ABOUT: {
+            HWND hWndAbout = CreateWindow(
+                TEXT("WndAbout"), // 窗口类注册名称
+                TEXT("关于"), // 窗口标题
+                WS_VISIBLE | WS_OVERLAPPEDWINDOW, // 标准交互
+                CW_USEDEFAULT, // 初始x坐标
+                CW_USEDEFAULT, // 初始y坐标
+                CW_USEDEFAULT, // 初始x方向尺寸
+                CW_USEDEFAULT, // 初始y方向尺寸
+                hWnd, // 父窗口句柄
+                NULL /* Must be NULL! */, // 主窗口菜单句柄、子窗口窗口标识（整形、父窗口内唯一）
+                GetModuleHandle(NULL), // 程序实例句柄
+                NULL // 窗口创建参数
+            );
+            QILD2D::D2dWndDepAbout* ptr = reinterpret_cast<QILD2D::D2dWndDepAbout*>(static_cast<LONG_PTR>(GetWindowLongPtr(hWnd, GWLP_USERDATA)));
+            break;
+        }
         default:
             break;
         }

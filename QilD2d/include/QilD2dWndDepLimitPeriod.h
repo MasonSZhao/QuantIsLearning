@@ -19,10 +19,10 @@ struct D2dWndDepLimitPeriodText {
 };
 
 struct D2dWndDepLimitPeriodTimeSharing {
+    bool m_madeVertInitDisplayBottom = false;
+
     int32_t m_nVert = 3; // 垂直
     int32_t m_nHorz = 4; // 水平
-
-    bool m_madeVertInitDisplayBottom = false;
 
     std::vector<std::vector<std::vector<QILD2D::D2dWndDepTimeSharing::WMPAINT>>> m_vecVecVecD2dWndDepTimeSharing;
 

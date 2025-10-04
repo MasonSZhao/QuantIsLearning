@@ -29,12 +29,12 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     auto file_logger = spdlog::basic_logger_mt("daily_logger", logPath);
 
     file_logger->set_pattern("[%Y-%m-%d %H:%M:%S.%e] [%t] [%s-%#-%!] [%l] %v"); // 设置日志格式 %t thread id, %s source fileName, %# source fileLine, %! source funcName, #l log level, %v log text.
-    file_logger->set_level(spdlog::level::trace); // 设置文件日志级别
-    file_logger->flush_on(spdlog::level::trace);
+    file_logger->set_level(spdlog::level::info); // 设置文件日志级别
+    file_logger->flush_on(spdlog::level::info);
 
     // spdlog::register_logger(file_logger); // 注册多态日志器
     spdlog::set_default_logger(file_logger);
-    spdlog::set_level(spdlog::level::trace);
+    spdlog::set_level(spdlog::level::info);
 
     SPDLOG_INFO(std::string { "QIL启动。" });
 
@@ -148,6 +148,20 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
             return 1;
         }
     }
+    {
+        WNDCLASS wc {};
+        wc.lpfnWndProc = QILD2D::D2dWndDepAbout::WndProc;
+        wc.cbClsExtra = 0;
+        wc.cbWndExtra = sizeof(LONG_PTR);
+        wc.hInstance = hInstance;
+        wc.hbrBackground = NULL;
+        wc.hCursor = LoadCursor(hInstance, IDI_APPLICATION);
+        wc.lpszClassName = TEXT("WndAbout");
+        if (!RegisterClass(&wc)) {
+            MessageBox(NULL, TEXT("Call to RegisterClass failed!"), TEXT("量化正在学习"), NULL);
+            return 1;
+        }
+    }
 
     // MENU
     HMENU hMenu = CreateMenu();
@@ -168,6 +182,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     HMENU hMenuHelp = CreateMenu();
     AppendMenu(hMenu, MF_POPUP, (UINT)hMenuHelp, TEXT("帮助(&H)"));
     {
+        AppendMenu(hMenuHelp, MF_STRING, WNDMAIN_HMENU_HELP_ABOUT, TEXT("关于(&A)"));
     }
 
     // CREATE

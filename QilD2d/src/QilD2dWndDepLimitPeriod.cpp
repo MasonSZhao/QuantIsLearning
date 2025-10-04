@@ -211,7 +211,6 @@ LRESULT CALLBACK D2dWndDepLimitPeriodText::WndProc(HWND hWnd, UINT uMsg, WPARAM 
         auto idxVScroll = GetScrollPos(hWnd, SB_VERT); // 垂直
         auto idxHScroll = GetScrollPos(hWnd, SB_HORZ); // 水平
         if (true) {
-            IDWriteTextLayout* pDWriteTextLayoutTemp;
             int32_t lineCount = std::ceil((rc.bottom - rc.top) / QILD2D::D2dWndIndep::s_lineHeight16);
             for (size_t i = 0; i < lineCount; ++i) {
                 if (i + idxVScroll < ptr->m_vecPDWriteTextLayout.size()) {

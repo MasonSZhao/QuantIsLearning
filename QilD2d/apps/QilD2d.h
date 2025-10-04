@@ -24,6 +24,7 @@
 #pragma comment(lib, "dwrite.lib")
 
 #include "..\include\QilD2dWndDep.h"
+#include "..\include\QilD2dWndDepAbout.h"
 #include "..\include\QilD2dWndDepLimitPeriod.h"
 #include "..\include\QilD2dWndDepMain.h"
 #include "..\include\QilD2dWndDepTimeSharing.h"
