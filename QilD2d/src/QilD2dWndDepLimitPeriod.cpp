@@ -286,7 +286,7 @@ LRESULT CALLBACK D2dWndDepLimitPeriodText::WndProc(HWND hWnd, UINT uMsg, WPARAM 
         default:
             break;
         }
-        // Set the position and then retrieve it.  Due to adjustments by Windows it may not be the same as the value set.
+        // Set the position and then retrieve it. Due to adjustments by Windows it may not be the same as the value set.
         si.fMask = SIF_POS;
         SetScrollInfo(hWnd, SB_VERT, &si, TRUE);
         GetScrollInfo(hWnd, SB_VERT, &si);
@@ -325,7 +325,7 @@ LRESULT CALLBACK D2dWndDepLimitPeriodText::WndProc(HWND hWnd, UINT uMsg, WPARAM 
         default:
             break;
         }
-        // Set the position and then retrieve it.  Due to adjustments by Windows it may not be the same as the value set.
+        // Set the position and then retrieve it. Due to adjustments by Windows it may not be the same as the value set.
         si.fMask = SIF_POS;
         SetScrollInfo(hWnd, SB_HORZ, &si, TRUE);
         GetScrollInfo(hWnd, SB_HORZ, &si);
@@ -383,7 +383,7 @@ LRESULT CALLBACK D2dWndDepLimitPeriodText::WndProc(HWND hWnd, UINT uMsg, WPARAM 
         si.fMask = SIF_ALL;
         GetScrollInfo(hWnd, SB_VERT, &si);
         si.nPos -= GET_WHEEL_DELTA_WPARAM(wParam);
-        // Set the position and then retrieve it.  Due to adjustment by Windows it may not be the same as the value set.
+        // Set the position and then retrieve it. Due to adjustment by Windows it may not be the same as the value set.
         si.fMask = SIF_POS;
         SetScrollInfo(hWnd, SB_VERT, &si, TRUE);
         GetScrollInfo(hWnd, SB_VERT, &si);
@@ -554,6 +554,7 @@ LRESULT CALLBACK D2dWndDepLimitPeriodTimeSharing::WndProc(HWND hWnd, UINT uMsg, 
                         }
                     }
                 }
+                QILHOST::TimeSeriesCrossSector::s_maxCount = maxCount;
                 ptr->m_vecVecVecD2dWndDepTimeSharing.resize(QILHOST::TimeSeriesCrossSector::s_vecDate.size());
                 for (auto& e : ptr->m_vecVecVecD2dWndDepTimeSharing) {
                     // [][n] 为n板
@@ -590,7 +591,7 @@ LRESULT CALLBACK D2dWndDepLimitPeriodTimeSharing::WndProc(HWND hWnd, UINT uMsg, 
                                     std::vector<QILHOST::IntMinuteBar> vecIntMinuteBar;
                                     if (idxDate >= 0) {
                                         if (false) {
-                                            std::string str { "found\n" };
+                                            std::wstring str { L"found\n" };
                                             WriteConsole(GetStdHandle(STD_OUTPUT_HANDLE), str.c_str(), str.size(), NULL, NULL);
                                         }
                                         vecIntMinuteBar = QILHOST::TD::FileVecMinuteBar::int3264Date(
@@ -601,7 +602,7 @@ LRESULT CALLBACK D2dWndDepLimitPeriodTimeSharing::WndProc(HWND hWnd, UINT uMsg, 
                                             QILHOST::TD::FileVecMinuteBar::s_lutDate1999999[QILHOST::TimeSeriesCrossSector::s_vecDate[idxLocal]] * 240);
                                     } else {
                                         if (false) {
-                                            std::string str { "not found\n" };
+                                            std::wstring str { L"not found\n" };
                                             WriteConsole(GetStdHandle(STD_OUTPUT_HANDLE), str.c_str(), str.size(), NULL, NULL);
                                         }
                                         vecIntMinuteBar = QILHOST::TD::FileVecMinuteBar::int3264Date(
@@ -643,17 +644,21 @@ LRESULT CALLBACK D2dWndDepLimitPeriodTimeSharing::WndProc(HWND hWnd, UINT uMsg, 
         ptr->m_D2dWndDep.m_pD2D1HwndRenderTarget->BeginDraw();
         // All painting occurs here, between BeginPaint and EndPaint.
         ptr->m_D2dWndDep.m_pD2D1HwndRenderTarget->Clear(D2D1::ColorF(D2D1::ColorF::White));
+        auto idxVScroll = GetScrollPos(hWnd, SB_VERT); // 垂直
+        auto idxHScroll = GetScrollPos(hWnd, SB_HORZ); // 水平
         for (int32_t i { 0 }; i < ptr->m_nHorz; ++i) {
-            for (int32_t j { 0 }; j < ptr->m_nVert; ++j) {
-                for (auto& vec : ptr->m_vecVecVecD2dWndDepTimeSharing[i]) {
-                    if (vec.size() > j + 1) {
-                        for (auto& op : ptr->m_vecVecVecD2dWndDepTimeSharing[i][j + 1]) {
-                            op.m_xStart = 0 + i * (rc.right - rc.left) / ptr->m_nHorz;
-                            op.m_yStart = 0 + (ptr->m_nVert - j - 1) * (rc.bottom - rc.top) / ptr->m_nVert;
-                            op.m_xWidth = (rc.right - rc.left) / ptr->m_nHorz;
-                            op.m_yHeight = (rc.bottom - rc.top) / ptr->m_nVert;
-                            op.m_d2dWndDep = &(ptr->m_D2dWndDep);
-                            op.operator()();
+            if (idxHScroll + i < ptr->m_vecVecVecD2dWndDepTimeSharing.size()) {
+                for (int32_t j { 0 }; j < ptr->m_nVert; ++j) {
+                    if (QILHOST::TimeSeriesCrossSector::s_maxCount >= idxVScroll + j) {
+                        if (ptr->m_vecVecVecD2dWndDepTimeSharing[idxHScroll + i].size() > QILHOST::TimeSeriesCrossSector::s_maxCount - idxVScroll - j) {
+                            for (auto& op : ptr->m_vecVecVecD2dWndDepTimeSharing[idxHScroll + i][QILHOST::TimeSeriesCrossSector::s_maxCount - idxVScroll - j]) {
+                                op.m_xStart = 0 + i * (rc.right - rc.left) / ptr->m_nHorz;
+                                op.m_yStart = 0 + j * (rc.bottom - rc.top) / ptr->m_nVert;
+                                op.m_xWidth = (rc.right - rc.left) / ptr->m_nHorz;
+                                op.m_yHeight = (rc.bottom - rc.top) / ptr->m_nVert;
+                                op.m_d2dWndDep = &(ptr->m_D2dWndDep);
+                                op.operator()();
+                            }
                         }
                     }
                 }
@@ -664,6 +669,174 @@ LRESULT CALLBACK D2dWndDepLimitPeriodTimeSharing::WndProc(HWND hWnd, UINT uMsg, 
         ptr->m_D2dWndDep.m_pD2D1HwndRenderTarget->EndDraw();
         // EndPaint(hWnd, &ps);
         ValidateRect(hWnd, NULL);
+        return 0;
+    }
+    // https://learn.microsoft.com/en-us/windows/win32/controls/scroll-text-in-scroll-bars
+    case WM_SIZE: {
+        QILD2D::D2dWndDepLimitPeriodTimeSharing* ptr = reinterpret_cast<QILD2D::D2dWndDepLimitPeriodTimeSharing*>(static_cast<LONG_PTR>(GetWindowLongPtr(hWnd, GWLP_USERDATA)));
+        //  Set the vertical scrolling range and page size
+        {
+            SCROLLINFO si;
+            si.cbSize = sizeof(si);
+            si.fMask = SIF_RANGE | SIF_PAGE;
+            si.nMin = 0;
+            si.nMax = QILHOST::TimeSeriesCrossSector::s_maxCount;
+            si.nPage = ptr->m_nVert;
+            SetScrollInfo(hWnd, SB_VERT, &si, TRUE);
+        }
+        // Set the horizontal scrolling range and page size.
+        {
+            SCROLLINFO si;
+            si.cbSize = sizeof(si);
+            si.fMask = SIF_RANGE | SIF_PAGE;
+            si.nMin = 0;
+            si.nMax = ptr->m_vecVecVecD2dWndDepTimeSharing.size();
+            si.nPage = ptr->m_nHorz;
+            SetScrollInfo(hWnd, SB_HORZ, &si, TRUE);
+        }
+        D2D1_SIZE_U size = D2D1::SizeU(LOWORD(lParam) /*width*/, HIWORD(lParam) /*height*/);
+        ptr->m_D2dWndDep.m_pD2D1HwndRenderTarget->Resize(size);
+        // InvalidateRect(hWnd, NULL, FALSE);
+        if (false == ptr->m_madeVertInitDisplayBottom) {
+            SendMessage(hWnd, WM_VSCROLL, MAKELONG(SB_BOTTOM, 0), 0L);
+            ptr->m_madeVertInitDisplayBottom = true;
+        }
+        return 0;
+    }
+    // https://learn.microsoft.com/en-us/windows/win32/controls/scroll-text-in-scroll-bars
+    case WM_VSCROLL: {
+        SCROLLINFO si;
+        // Get all the vertial scroll bar information.
+        si.cbSize = sizeof(si);
+        si.fMask = SIF_ALL;
+        GetScrollInfo(hWnd, SB_VERT, &si);
+        switch (LOWORD(wParam)) {
+        case SB_TOP:
+            si.nPos = si.nMin;
+            break; // User clicked the HOME keyboard key.
+        case SB_BOTTOM:
+            si.nPos = si.nMax;
+            break; // User clicked the END keyboard key.
+        case SB_LINEUP:
+            si.nPos -= 1;
+            break; // User clicked the top arrow.
+        case SB_LINEDOWN:
+            si.nPos += 1;
+            break; // User clicked the bottom arrow.
+        case SB_PAGEUP:
+            si.nPos -= si.nPage;
+            break; // User clicked the scroll bar shaft above the scroll box.
+        case SB_PAGEDOWN:
+            si.nPos += si.nPage;
+            break; // User clicked the scroll bar shaft below the scroll box.
+        case SB_THUMBTRACK:
+            si.nPos = si.nTrackPos;
+            break; // User dragged the scroll box.
+        default:
+            break;
+        }
+        // Set the position and then retrieve it. Due to adjustments by Windows it may not be the same as the value set.
+        si.fMask = SIF_POS;
+        SetScrollInfo(hWnd, SB_VERT, &si, TRUE);
+        GetScrollInfo(hWnd, SB_VERT, &si);
+        InvalidateRect(hWnd, NULL, FALSE);
+        return 0;
+    }
+    // https://learn.microsoft.com/en-us/windows/win32/controls/scroll-text-in-scroll-bars
+    case WM_HSCROLL: {
+        SCROLLINFO si;
+        // Get all the horizontal scroll bar information.
+        si.cbSize = sizeof(si);
+        si.fMask = SIF_ALL;
+        GetScrollInfo(hWnd, SB_HORZ, &si);
+        switch (LOWORD(wParam)) {
+        case SB_TOP:
+            si.nPos = si.nMin;
+            break; // User clicked the HOME keyboard key.
+        case SB_BOTTOM:
+            si.nPos = si.nMax;
+            break; // User clicked the END keyboard key.
+        case SB_LINEUP:
+            si.nPos -= 1;
+            break; // User clicked the top arrow.
+        case SB_LINEDOWN:
+            si.nPos += 1;
+            break; // User clicked the bottom arrow.
+        case SB_PAGEUP:
+            si.nPos -= si.nPage;
+            break; // User clicked the scroll bar shaft above the scroll box.
+        case SB_PAGEDOWN:
+            si.nPos += si.nPage;
+            break; // User clicked the scroll bar shaft below the scroll box.
+        case SB_THUMBTRACK:
+            si.nPos = si.nTrackPos;
+            break; // User dragged the scroll box.
+        default:
+            break;
+        }
+        // Set the position and then retrieve it. Due to adjustments by Windows it may not be the same as the value set.
+        si.fMask = SIF_POS;
+        SetScrollInfo(hWnd, SB_HORZ, &si, TRUE);
+        GetScrollInfo(hWnd, SB_HORZ, &si);
+        InvalidateRect(hWnd, NULL, FALSE);
+        return 0;
+    }
+    // https://learn.microsoft.com/en-us/windows/win32/controls/scroll-text-in-scroll-bars
+    case WM_KEYDOWN: {
+        // vertical
+        {
+            WORD wScrollNotify = 0xFFFF;
+            switch (wParam) {
+            case VK_UP:
+                wScrollNotify = SB_LINEUP;
+                break;
+            case VK_PRIOR:
+                wScrollNotify = SB_PAGEUP;
+                break;
+            case VK_NEXT:
+                wScrollNotify = SB_PAGEDOWN;
+                break;
+            case VK_DOWN:
+                wScrollNotify = SB_LINEDOWN;
+                break;
+            case VK_HOME:
+                wScrollNotify = SB_TOP;
+                break;
+            case VK_END:
+                wScrollNotify = SB_BOTTOM;
+                break;
+            }
+            if (wScrollNotify != -1)
+                SendMessage(hWnd, WM_VSCROLL, MAKELONG(wScrollNotify, 0), 0L);
+        }
+        // horizontal
+        {
+            WORD wScrollNotify = 0xFFFF;
+            switch (wParam) {
+            case VK_LEFT:
+                wScrollNotify = SB_LINELEFT;
+                break;
+            case VK_RIGHT:
+                wScrollNotify = SB_LINERIGHT;
+                break;
+            }
+            if (wScrollNotify != -1)
+                SendMessage(hWnd, WM_HSCROLL, MAKELONG(wScrollNotify, 0), 0L);
+        }
+        return 0;
+    }
+    case WM_MOUSEWHEEL: {
+        SCROLLINFO si;
+        // Get all the vertial scroll bar information.
+        si.cbSize = sizeof(si);
+        si.fMask = SIF_ALL;
+        GetScrollInfo(hWnd, SB_VERT, &si);
+        si.nPos -= GET_WHEEL_DELTA_WPARAM(wParam);
+        // Set the position and then retrieve it.  Due to adjustment by Windows it may not be the same as the value set.
+        si.fMask = SIF_POS;
+        SetScrollInfo(hWnd, SB_VERT, &si, TRUE);
+        GetScrollInfo(hWnd, SB_VERT, &si);
+        InvalidateRect(hWnd, NULL, FALSE);
         return 0;
     }
     default:

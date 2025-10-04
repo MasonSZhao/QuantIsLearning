@@ -31,6 +31,7 @@ struct CrossSectorTimeSeries {
 struct TimeSeriesCrossSector {
     static std::vector<int32_t> s_vecDate;
     static std::vector<std::vector<QILHOST::IntLimitUpDn>> s_vecVecIntLimitUp;
+    static int32_t s_maxCount;
 };
 
 }

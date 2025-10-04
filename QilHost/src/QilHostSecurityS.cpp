@@ -20,4 +20,6 @@ std::vector<int32_t> TimeSeriesCrossSector::s_vecDate;
 
 std::vector<std::vector<QILHOST::IntLimitUpDn>> TimeSeriesCrossSector::s_vecVecIntLimitUp;
 
+int32_t TimeSeriesCrossSector::s_maxCount;
+
 }
