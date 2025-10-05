@@ -148,6 +148,68 @@ LRESULT CALLBACK D2dWndDepMain::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPA
         auto wID = LOWORD(wParam);
         switch (wID) {
         case WNDMAIN_HMENU_SYS_SETMINUTEBAR: {
+            std::wstring ret {};
+            HRESULT hr;
+            IFileOpenDialog* pFileOpen;
+            // https://learn.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cocreateinstance
+            hr = CoCreateInstance(CLSID_FileOpenDialog, NULL, CLSCTX_ALL, IID_IFileOpenDialog, reinterpret_cast<void**>(&pFileOpen));
+            if (SUCCEEDED(hr)) {
+                hr = pFileOpen->Show(NULL); // Show the Open Dialog.
+                if (SUCCEEDED(hr)) {
+                    IShellItem* pItem;
+                    hr = pFileOpen->GetResult(&pItem);
+                    if (SUCCEEDED(hr)) {
+                        PWSTR /*Unicode UTF-16 WideChar*/ pszFilePath;
+                        hr = pItem->GetDisplayName(SIGDN_FILESYSPATH, &pszFilePath);
+                        if (SUCCEEDED(hr)) {
+                            ret = std::wstring { pszFilePath };
+                            CoTaskMemFree(pszFilePath);
+                        }
+                        pItem->Release();
+                    }
+                }
+                pFileOpen->Release();
+            }
+            if (ret.size() >= 12) {
+                std::wstring fileName = ret.substr(ret.size() - 12, 12);
+                if (0 == fileName.compare(L"sh999999.lc1")) {
+                    std::wstring wstrfolder = ret.substr(0, ret.size() - 12 - 11);
+                    USES_CONVERSION;
+                    std::string strFolder = W2A(wstrfolder.c_str());
+                    QILHOST::TD::FileVecMinuteBar::s_folderPath = strFolder;
+                    if (std::filesystem::exists(std::filesystem::path { QILHOST::TD::FileVecMinuteBar::getFilePath("1999999") })) {
+                        std::vector<QILHOST::IntMinuteBar> des { QILHOST::TD::FileVecMinuteBar::int3264("1999999", 241, true) };
+                        {
+                            ptr->m_D2dWndDepTimeSharingWMPAINT1999999.m_vecIntMinuteBar.reserve(240);
+                            ptr->m_D2dWndDepTimeSharingWMPAINT1999999.m_preCl = des[0].m_cl;
+                            ptr->m_D2dWndDepTimeSharingWMPAINT1999999.m_limitUpPr = des[1].m_cl;
+                            ptr->m_D2dWndDepTimeSharingWMPAINT1999999.m_limitDnPr = des[1].m_cl;
+                            ptr->m_D2dWndDepTimeSharingWMPAINT1999999.m_volMax = des[0].m_vol;
+                            for (auto i { 1 }; i <= 240; ++i) {
+                                ptr->m_D2dWndDepTimeSharingWMPAINT1999999.m_vecIntMinuteBar.push_back(des[i]);
+                                if (des[i].m_vol > ptr->m_D2dWndDepTimeSharingWMPAINT1999999.m_volMax)
+                                    ptr->m_D2dWndDepTimeSharingWMPAINT1999999.m_volMax = des[i].m_vol;
+                                if (des[i].m_cl > ptr->m_D2dWndDepTimeSharingWMPAINT1999999.m_limitUpPr)
+                                    ptr->m_D2dWndDepTimeSharingWMPAINT1999999.m_limitUpPr = des[i].m_cl;
+                                if (des[i].m_cl < ptr->m_D2dWndDepTimeSharingWMPAINT1999999.m_limitDnPr)
+                                    ptr->m_D2dWndDepTimeSharingWMPAINT1999999.m_limitDnPr = des[i].m_cl;
+                            }
+                            int32_t temp = ptr->m_D2dWndDepTimeSharingWMPAINT1999999.m_limitUpPr - des[0].m_cl;
+                            if ((des[0].m_cl - ptr->m_D2dWndDepTimeSharingWMPAINT1999999.m_limitDnPr) > temp) {
+                                temp = des[0].m_cl - ptr->m_D2dWndDepTimeSharingWMPAINT1999999.m_limitDnPr;
+                            }
+                            temp += 100;
+                            ptr->m_D2dWndDepTimeSharingWMPAINT1999999.m_limitUpPr = ptr->m_D2dWndDepTimeSharingWMPAINT1999999.m_preCl + temp;
+                            ptr->m_D2dWndDepTimeSharingWMPAINT1999999.m_limitDnPr = ptr->m_D2dWndDepTimeSharingWMPAINT1999999.m_preCl - temp;
+                            ptr->m_D2dWndDepTimeSharingWMPAINT1999999.m_volMax += 0.1 * ptr->m_D2dWndDepTimeSharingWMPAINT1999999.m_volMax;
+                            ptr->m_D2dWndDepTimeSharingWMPAINT1999999.m_vecIntMinuteBar.swap(des);
+                            ptr->m_D2dWndDepTimeSharingWMPAINT1999999.m_d2dWndDep = &(ptr->m_D2dWndDep);
+                        }
+                    }
+                    InvalidateRect(hWnd, NULL, FALSE);
+                } else {
+                }
+            }
             break;
         }
         case WNDMAIN_HMENU_REVIEW_LIMITPERIOD300DESCRIPTION: {

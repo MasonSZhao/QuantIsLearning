@@ -8,7 +8,9 @@
 #include "QilD2dWndDepLimitPeriod.h"
 #include "QilD2dWndDepTimeSharing.h"
 #include "QilD2dWndIndep.h"
+#include <atlconv.h> // USES_CONVERSION, W2A, A2W
 #include <filesystem>
+#include <shobjidl.h> // FileOpenDialogBox
 #include <vector>
 
 namespace QILD2D {
