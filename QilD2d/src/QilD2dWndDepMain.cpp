@@ -53,32 +53,34 @@ LRESULT CALLBACK D2dWndDepMain::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPA
             std::vector<std::jthread> vecThread;
             // 并行线程 上证指数分时数据
             vecThread.emplace_back([&]() {
-                std::vector<QILHOST::IntMinuteBar> des { QILHOST::TD::FileVecMinuteBar::int3264("1999999", 241, true) };
-                {
-                    ptr->m_D2dWndDepTimeSharingWMPAINT1999999.m_vecIntMinuteBar.reserve(240);
-                    ptr->m_D2dWndDepTimeSharingWMPAINT1999999.m_preCl = des[0].m_cl;
-                    ptr->m_D2dWndDepTimeSharingWMPAINT1999999.m_limitUpPr = des[1].m_cl;
-                    ptr->m_D2dWndDepTimeSharingWMPAINT1999999.m_limitDnPr = des[1].m_cl;
-                    ptr->m_D2dWndDepTimeSharingWMPAINT1999999.m_volMax = des[0].m_vol;
-                    for (auto i { 1 }; i <= 240; ++i) {
-                        ptr->m_D2dWndDepTimeSharingWMPAINT1999999.m_vecIntMinuteBar.push_back(des[i]);
-                        if (des[i].m_vol > ptr->m_D2dWndDepTimeSharingWMPAINT1999999.m_volMax)
-                            ptr->m_D2dWndDepTimeSharingWMPAINT1999999.m_volMax = des[i].m_vol;
-                        if (des[i].m_cl > ptr->m_D2dWndDepTimeSharingWMPAINT1999999.m_limitUpPr)
-                            ptr->m_D2dWndDepTimeSharingWMPAINT1999999.m_limitUpPr = des[i].m_cl;
-                        if (des[i].m_cl < ptr->m_D2dWndDepTimeSharingWMPAINT1999999.m_limitDnPr)
-                            ptr->m_D2dWndDepTimeSharingWMPAINT1999999.m_limitDnPr = des[i].m_cl;
+                if (std::filesystem::exists(std::filesystem::path { QILHOST::TD::FileVecMinuteBar::getFilePath("1999999") })) {
+                    std::vector<QILHOST::IntMinuteBar> des { QILHOST::TD::FileVecMinuteBar::int3264("1999999", 241, true) };
+                    {
+                        ptr->m_D2dWndDepTimeSharingWMPAINT1999999.m_vecIntMinuteBar.reserve(240);
+                        ptr->m_D2dWndDepTimeSharingWMPAINT1999999.m_preCl = des[0].m_cl;
+                        ptr->m_D2dWndDepTimeSharingWMPAINT1999999.m_limitUpPr = des[1].m_cl;
+                        ptr->m_D2dWndDepTimeSharingWMPAINT1999999.m_limitDnPr = des[1].m_cl;
+                        ptr->m_D2dWndDepTimeSharingWMPAINT1999999.m_volMax = des[0].m_vol;
+                        for (auto i { 1 }; i <= 240; ++i) {
+                            ptr->m_D2dWndDepTimeSharingWMPAINT1999999.m_vecIntMinuteBar.push_back(des[i]);
+                            if (des[i].m_vol > ptr->m_D2dWndDepTimeSharingWMPAINT1999999.m_volMax)
+                                ptr->m_D2dWndDepTimeSharingWMPAINT1999999.m_volMax = des[i].m_vol;
+                            if (des[i].m_cl > ptr->m_D2dWndDepTimeSharingWMPAINT1999999.m_limitUpPr)
+                                ptr->m_D2dWndDepTimeSharingWMPAINT1999999.m_limitUpPr = des[i].m_cl;
+                            if (des[i].m_cl < ptr->m_D2dWndDepTimeSharingWMPAINT1999999.m_limitDnPr)
+                                ptr->m_D2dWndDepTimeSharingWMPAINT1999999.m_limitDnPr = des[i].m_cl;
+                        }
+                        int32_t temp = ptr->m_D2dWndDepTimeSharingWMPAINT1999999.m_limitUpPr - des[0].m_cl;
+                        if ((des[0].m_cl - ptr->m_D2dWndDepTimeSharingWMPAINT1999999.m_limitDnPr) > temp) {
+                            temp = des[0].m_cl - ptr->m_D2dWndDepTimeSharingWMPAINT1999999.m_limitDnPr;
+                        }
+                        temp += 100;
+                        ptr->m_D2dWndDepTimeSharingWMPAINT1999999.m_limitUpPr = ptr->m_D2dWndDepTimeSharingWMPAINT1999999.m_preCl + temp;
+                        ptr->m_D2dWndDepTimeSharingWMPAINT1999999.m_limitDnPr = ptr->m_D2dWndDepTimeSharingWMPAINT1999999.m_preCl - temp;
+                        ptr->m_D2dWndDepTimeSharingWMPAINT1999999.m_volMax += 0.1 * ptr->m_D2dWndDepTimeSharingWMPAINT1999999.m_volMax;
+                        ptr->m_D2dWndDepTimeSharingWMPAINT1999999.m_vecIntMinuteBar.swap(des);
+                        ptr->m_D2dWndDepTimeSharingWMPAINT1999999.m_d2dWndDep = &(ptr->m_D2dWndDep);
                     }
-                    int32_t temp = ptr->m_D2dWndDepTimeSharingWMPAINT1999999.m_limitUpPr - des[0].m_cl;
-                    if ((des[0].m_cl - ptr->m_D2dWndDepTimeSharingWMPAINT1999999.m_limitDnPr) > temp) {
-                        temp = des[0].m_cl - ptr->m_D2dWndDepTimeSharingWMPAINT1999999.m_limitDnPr;
-                    }
-                    temp += 100;
-                    ptr->m_D2dWndDepTimeSharingWMPAINT1999999.m_limitUpPr = ptr->m_D2dWndDepTimeSharingWMPAINT1999999.m_preCl + temp;
-                    ptr->m_D2dWndDepTimeSharingWMPAINT1999999.m_limitDnPr = ptr->m_D2dWndDepTimeSharingWMPAINT1999999.m_preCl - temp;
-                    ptr->m_D2dWndDepTimeSharingWMPAINT1999999.m_volMax += 0.1 * ptr->m_D2dWndDepTimeSharingWMPAINT1999999.m_volMax;
-                    ptr->m_D2dWndDepTimeSharingWMPAINT1999999.m_vecIntMinuteBar.swap(des);
-                    ptr->m_D2dWndDepTimeSharingWMPAINT1999999.m_d2dWndDep = &(ptr->m_D2dWndDep);
                 }
             });
         }
@@ -94,23 +96,35 @@ LRESULT CALLBACK D2dWndDepMain::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPA
         ptr->m_D2dWndDep.m_pD2D1HwndRenderTarget->BeginDraw();
         // All painting occurs here, between BeginPaint and EndPaint.
         ptr->m_D2dWndDep.m_pD2D1HwndRenderTarget->Clear(D2D1::ColorF(D2D1::ColorF::White));
-        if (false) {
-            ptr->m_D2dWndDepTimeSharingWMPAINT1999999.m_xStart = 0;
-            ptr->m_D2dWndDepTimeSharingWMPAINT1999999.m_yStart = 0;
-            ptr->m_D2dWndDepTimeSharingWMPAINT1999999.m_xWidth = (rc.right - rc.left);
-            ptr->m_D2dWndDepTimeSharingWMPAINT1999999.m_yHeight = (rc.bottom - rc.top);
-            ptr->m_D2dWndDepTimeSharingWMPAINT1999999.operator()();
-        } else {
-            int32_t nVert = 3; // 垂直
-            int32_t nHorz = 4; // 水平
-            for (int32_t i { 0 }; i < nHorz; ++i) {
-                for (int32_t j { 0 }; j < nVert; ++j) {
-                    ptr->m_D2dWndDepTimeSharingWMPAINT1999999.m_xStart = 0 + i * (rc.right - rc.left) / nHorz;
-                    ptr->m_D2dWndDepTimeSharingWMPAINT1999999.m_yStart = 0 + j * (rc.bottom - rc.top) / nVert;
-                    ptr->m_D2dWndDepTimeSharingWMPAINT1999999.m_xWidth = (rc.right - rc.left) / nHorz;
-                    ptr->m_D2dWndDepTimeSharingWMPAINT1999999.m_yHeight = (rc.bottom - rc.top) / nVert;
-                    ptr->m_D2dWndDepTimeSharingWMPAINT1999999.operator()();
+        if (!ptr->m_D2dWndDepTimeSharingWMPAINT1999999.m_vecIntMinuteBar.empty()) {
+            if (false) {
+                ptr->m_D2dWndDepTimeSharingWMPAINT1999999.m_xStart = 0;
+                ptr->m_D2dWndDepTimeSharingWMPAINT1999999.m_yStart = 0;
+                ptr->m_D2dWndDepTimeSharingWMPAINT1999999.m_xWidth = (rc.right - rc.left);
+                ptr->m_D2dWndDepTimeSharingWMPAINT1999999.m_yHeight = (rc.bottom - rc.top);
+                ptr->m_D2dWndDepTimeSharingWMPAINT1999999.operator()();
+            } else {
+                int32_t nVert = 3; // 垂直
+                int32_t nHorz = 4; // 水平
+                for (int32_t i { 0 }; i < nHorz; ++i) {
+                    for (int32_t j { 0 }; j < nVert; ++j) {
+                        ptr->m_D2dWndDepTimeSharingWMPAINT1999999.m_xStart = 0 + i * (rc.right - rc.left) / nHorz;
+                        ptr->m_D2dWndDepTimeSharingWMPAINT1999999.m_yStart = 0 + j * (rc.bottom - rc.top) / nVert;
+                        ptr->m_D2dWndDepTimeSharingWMPAINT1999999.m_xWidth = (rc.right - rc.left) / nHorz;
+                        ptr->m_D2dWndDepTimeSharingWMPAINT1999999.m_yHeight = (rc.bottom - rc.top) / nVert;
+                        ptr->m_D2dWndDepTimeSharingWMPAINT1999999.operator()();
+                    }
                 }
+            }
+        } else {
+            {
+                IDWriteTextLayout* pDWriteTextLayout;
+                std::wstring temp { L"系统默认路径下本地社区数据文件不存在，请您在\"系统(S)\"选项卡中指定日线、分钟社区数据文件。" };
+                {
+                    QILD2D::D2dWndIndep::s_pDWriteFactory->CreateTextLayout(temp.c_str(), temp.size(), QILD2D::D2dWndIndep::s_pDWriteTextFormat16, rc.right, rc.bottom, &pDWriteTextLayout);
+                    ptr->m_D2dWndDep.m_pD2D1HwndRenderTarget->DrawTextLayout(D2D1::Point2F(0, 0), pDWriteTextLayout, ptr->m_D2dWndDep.m_pD2DSolidColorBrushBlack);
+                }
+                pDWriteTextLayout->Release();
             }
         }
         // FillRect(hDC, &ps.rcPaint, //(HBRUSH)GetStockObject(WHITE_BRUSH));
@@ -128,11 +142,15 @@ LRESULT CALLBACK D2dWndDepMain::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPA
         return 0;
     }
     case WM_COMMAND: {
+        QILD2D::D2dWndDepMain* ptr = reinterpret_cast<QILD2D::D2dWndDepMain*>(static_cast<LONG_PTR>(GetWindowLongPtr(hWnd, GWLP_USERDATA)));
         auto hWndCtrl = lParam; // 发送WM_COMMAND的子窗口句柄
         auto wNotifyCode = HIWORD(wParam); // 菜单消息的通知码为0，加速键消息的通知码为1。
         auto wID = LOWORD(wParam);
         switch (wID) {
-        case WNDMAIN_HMENU_FEATURE_LIMITPERIOD300DESCRIPTION: {
+        case WNDMAIN_HMENU_SYS_SETMINUTEBAR: {
+            break;
+        }
+        case WNDMAIN_HMENU_REVIEW_LIMITPERIOD300DESCRIPTION: {
             HWND hWndLimitPeriodText = CreateWindow(
                 TEXT("WndLimitPeriodText"), // 窗口类注册名称
                 TEXT("创业板周期"), // 窗口标题
@@ -149,7 +167,7 @@ LRESULT CALLBACK D2dWndDepMain::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPA
             QILD2D::D2dWndDepLimitPeriodText* ptr = reinterpret_cast<QILD2D::D2dWndDepLimitPeriodText*>(static_cast<LONG_PTR>(GetWindowLongPtr(hWnd, GWLP_USERDATA)));
             break;
         }
-        case WNDMAIN_HMENU_FEATURE_LIMITPERIOD300TIMESHARING: {
+        case WNDMAIN_HMENU_REVIEW_LIMITPERIOD300TIMESHARING: {
             HWND hWndLimitPeriodText = CreateWindow(
                 TEXT("WndLimitPeriodTimeSharing"), // 窗口类注册名称
                 TEXT("创业板周期"), // 窗口标题

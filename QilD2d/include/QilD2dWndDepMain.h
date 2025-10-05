@@ -8,6 +8,7 @@
 #include "QilD2dWndDepLimitPeriod.h"
 #include "QilD2dWndDepTimeSharing.h"
 #include "QilD2dWndIndep.h"
+#include <filesystem>
 #include <vector>
 
 namespace QILD2D {
