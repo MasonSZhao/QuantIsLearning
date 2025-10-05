@@ -191,31 +191,42 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         AppendMenu(hMenuSys, MF_STRING | MF_DISABLED, WNDMAIN_HMENU_SYS_IMCONFIGFILE, TEXT("导入配置文件(&I)"));
     }
     HMENU hMenuEarlyWarn = CreateMenu();
-    AppendMenu(hMenu, MF_POPUP, (UINT)hMenuEarlyWarn, TEXT("预警(&W)"));
+    AppendMenu(hMenu, MF_POPUP | MF_DISABLED, (UINT)hMenuEarlyWarn, TEXT("预警(&W)"));
     HMENU hMenuL1Eye = CreateMenu();
     AppendMenu(hMenu, MF_POPUP | MF_DISABLED, (UINT)hMenuL1Eye, TEXT("盯盘(&E)"));
     HMENU hMenuReview = CreateMenu();
     AppendMenu(hMenu, MF_POPUP, (UINT)hMenuReview, TEXT("复盘(&R)"));
     {
         HMENU hMenuReviewLimitPeriod = CreateMenu();
-        AppendMenu(hMenuReview, MF_POPUP, (UINT)hMenuReviewLimitPeriod, TEXT("时序-造板接力周期(&L)"));
+        AppendMenu(hMenuReview, MF_POPUP, (UINT)hMenuReviewLimitPeriod, TEXT("时序-造板连板周期(&L)"));
         AppendMenu(hMenuReviewLimitPeriod, MF_STRING, WNDMAIN_HMENU_REVIEW_LIMITPERIOD300DESCRIPTION, TEXT("创业板 文字简述"));
         AppendMenu(hMenuReviewLimitPeriod, MF_STRING, WNDMAIN_HMENU_REVIEW_LIMITPERIOD300TIMESHARING, TEXT("创业板 分时叠加"));
-        AppendMenu(hMenuReviewLimitPeriod, MF_STRING, WNDMAIN_HMENU_REVIEW_LIMITPERIOD688DESCRIPTION, TEXT("科创板 文字简述"));
-        AppendMenu(hMenuReviewLimitPeriod, MF_STRING, WNDMAIN_HMENU_REVIEW_LIMITPERIOD688TIMESHARING, TEXT("科创板 分时叠加"));
-        AppendMenu(hMenuReviewLimitPeriod, MF_STRING, WNDMAIN_HMENU_REVIEW_LIMITPERIODBJDESCRIPTION, TEXT("北交所 文字简述"));
-        AppendMenu(hMenuReviewLimitPeriod, MF_STRING, WNDMAIN_HMENU_REVIEW_LIMITPERIODBJTIMESHARING, TEXT("北交所 分时叠加"));
-        AppendMenu(hMenuReviewLimitPeriod, MF_STRING, WNDMAIN_HMENU_REVIEW_LIMITPERIODSHSZDESCRIPTION, TEXT("主板 文字简述"));
-        AppendMenu(hMenuReviewLimitPeriod, MF_STRING, WNDMAIN_HMENU_REVIEW_LIMITPERIODSHSZTIMESHARING, TEXT("主板 分时叠加"));
+        AppendMenu(hMenuReviewLimitPeriod, MF_STRING | MF_DISABLED, WNDMAIN_HMENU_REVIEW_LIMITPERIOD688DESCRIPTION, TEXT("科创板 文字简述"));
+        AppendMenu(hMenuReviewLimitPeriod, MF_STRING | MF_DISABLED, WNDMAIN_HMENU_REVIEW_LIMITPERIOD688TIMESHARING, TEXT("科创板 分时叠加"));
+        AppendMenu(hMenuReviewLimitPeriod, MF_STRING | MF_DISABLED, WNDMAIN_HMENU_REVIEW_LIMITPERIODBJDESCRIPTION, TEXT("北交所 文字简述"));
+        AppendMenu(hMenuReviewLimitPeriod, MF_STRING | MF_DISABLED, WNDMAIN_HMENU_REVIEW_LIMITPERIODBJTIMESHARING, TEXT("北交所 分时叠加"));
+        AppendMenu(hMenuReviewLimitPeriod, MF_STRING | MF_DISABLED, WNDMAIN_HMENU_REVIEW_LIMITPERIODSHSZDESCRIPTION, TEXT("主板 文字简述"));
+        AppendMenu(hMenuReviewLimitPeriod, MF_STRING | MF_DISABLED, WNDMAIN_HMENU_REVIEW_LIMITPERIODSHSZTIMESHARING, TEXT("主板 分时叠加"));
         HMENU hMenuReviewConceptPeriod = CreateMenu();
-        AppendMenu(hMenuReview, MF_STRING, (UINT)hMenuReviewConceptPeriod, TEXT("时序-题材周期(&C)"));
+        AppendMenu(hMenuReview, MF_STRING | MF_DISABLED, (UINT)hMenuReviewConceptPeriod, TEXT("时序-题材周期(&C)"));
         AppendMenu(hMenuReview, MF_SEPARATOR, 0, NULL);
         HMENU hMenuReivewGOrL = CreateMenu();
-        AppendMenu(hMenuReview, MF_STRING, (UINT)hMenuReivewGOrL, TEXT("截面-赚钱亏钱效应(&G)"));
+        AppendMenu(hMenuReview, MF_STRING | MF_DISABLED, (UINT)hMenuReivewGOrL, TEXT("截面-赚钱亏钱效应(&G)"));
+        HMENU hMenuReviewQuotePub = CreateMenu();
+        AppendMenu(hMenuReview, MF_POPUP, (UINT)hMenuReviewQuotePub, TEXT("截面-龙虎榜数据(&Q)"));
+        AppendMenu(hMenuReviewQuotePub, MF_STRING | MF_DISABLED, WNDMAIN_HMENU_REVIEW_QUOTEPUBINSTI, TEXT("机构"));
+        AppendMenu(hMenuReviewQuotePub, MF_STRING | MF_DISABLED, WNDMAIN_HMENU_REVIEW_QUOTEPUBQUANT, TEXT("量化"));
+        AppendMenu(hMenuReviewQuotePub, MF_STRING | MF_DISABLED, WNDMAIN_HMENU_REVIEW_QUOTEPUBHOTMONEY, TEXT("游资"));
     }
     HMENU hMenuFilter = CreateMenu();
     AppendMenu(hMenu, MF_POPUP, (UINT)hMenuFilter, TEXT("选股(&F)"));
     {
+        HMENU hMenuFilterPr = CreateMenu();
+        AppendMenu(hMenuFilter, MF_POPUP | MF_DISABLED, (UINT)hMenuFilterPr, TEXT("价"));
+        HMENU hMenuFilterVol = CreateMenu();
+        AppendMenu(hMenuFilter, MF_POPUP | MF_DISABLED, (UINT)hMenuFilterVol, TEXT("量"));
+        HMENU hMenuFilterForm = CreateMenu();
+        AppendMenu(hMenuFilter, MF_POPUP | MF_DISABLED, (UINT)hMenuFilterForm, TEXT("形态"));
     }
     HMENU hMenuHelp = CreateMenu();
     AppendMenu(hMenu, MF_POPUP, (UINT)hMenuHelp, TEXT("帮助(&H)"));
