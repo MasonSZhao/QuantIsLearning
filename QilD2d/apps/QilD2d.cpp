@@ -36,7 +36,13 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     spdlog::set_default_logger(file_logger);
     spdlog::set_level(spdlog::level::info);
 
-    SPDLOG_INFO(std::string { "QIL启动。" });
+    if (false) {
+        std::wstring msg { L"QIL启动。" };
+        USES_CONVERSION;
+        SPDLOG_INFO(W2A(msg.c_str()));
+    } else {
+        SPDLOG_INFO("QIL starts.");
+    }
 
     UNREFERENCED_PARAMETER(hPrevInstance);
     UNREFERENCED_PARAMETER(lpCmdLine);
@@ -253,7 +259,13 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     QILD2D::D2dWndIndep::SafeRelease(&QILD2D::D2dWndIndep::s_pDWriteFactory);
     QILD2D::D2dWndIndep::SafeRelease(&QILD2D::D2dWndIndep::s_pD2D1Factory);
 
-    SPDLOG_INFO(std::string { "QIL退出。" });
+    if (false) {
+        std::wstring msg { L"QIL退出。" };
+        USES_CONVERSION;
+        SPDLOG_INFO(W2A(msg.c_str()));
+    } else {
+        SPDLOG_INFO("QIL ends.");
+    }
 
     {
         // 清理并释放资源
