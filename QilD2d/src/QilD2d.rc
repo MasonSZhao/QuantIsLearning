@@ -1,0 +1,23 @@
+﻿#include "resource.h"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon https://learn.microsoft.com/en-us/windows/win32/menurc/icon-resource
+//
+
+IDI_QILD2D ICON "QilD2d.ico"
+
+    /////////////////////////////////////////////////////////////////////////////
+    //
+    // Menu https://learn.microsoft.com/en-us/windows/win32/menurc/menu-resource
+    //
+
+    /////////////////////////////////////////////////////////////////////////////
+    //
+    // Accelerator https://learn.microsoft.com/en-us/windows/win32/menurc/accelerators-resource
+    //
+
+    /////////////////////////////////////////////////////////////////////////////
+    //
+    // String Table https://learn.microsoft.com/en-us/windows/win32/menurc/stringtable-resource?redirectedfrom=MSDN
+    //

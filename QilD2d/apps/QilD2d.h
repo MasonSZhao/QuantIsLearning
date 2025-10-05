@@ -14,6 +14,8 @@
 #include <windows.h> // <windows.h> should be in front of <commctrl.h>
 #include <windowsx.h>
 
+#include "..\src\Resource.h"
+
 #include <ShlObj_core.h> // SHGetSpecialFolderPath CSIDL_LOCAL_APPDATA 头文件
 
 #include <commctrl.h>

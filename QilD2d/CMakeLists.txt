@@ -31,6 +31,8 @@ add_executable (
 	"apps/QilD2d.h"
 	${QILD2D_SRCS}
 	${QILD2D_HEADERS}
+	"src/QilD2d.rc"
+	"src/Resource.h"
 )
 
 target_link_libraries(QilD2dExecute PUBLIC QilHostStatic)

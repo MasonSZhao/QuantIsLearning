@@ -3,6 +3,7 @@
 // QilD2d.cpp : Defines the entry point for the application.
 
 #include "QilD2d.h"
+#include "..\src\Resource.h"
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     _In_opt_ HINSTANCE hPrevInstance,
@@ -119,7 +120,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         wc.cbWndExtra = sizeof(LONG_PTR);
         wc.hInstance = hInstance;
         wc.hbrBackground = NULL;
-        wc.hCursor = LoadCursor(hInstance, IDI_APPLICATION);
+        wc.hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_QILD2D)); // https://learn.microsoft.com/en-us/windows/win32/menurc/using-icons
+        wc.hCursor = LoadCursor(hInstance, IDC_ARROW);
         wc.lpszClassName = TEXT("WndMain");
         if (!RegisterClass(&wc)) {
             MessageBox(NULL, TEXT("Call to RegisterClass failed!"), TEXT("量化正在学习"), NULL);
@@ -133,7 +135,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         wc.cbWndExtra = sizeof(LONG_PTR);
         wc.hInstance = hInstance;
         wc.hbrBackground = NULL;
-        wc.hCursor = LoadCursor(hInstance, IDI_APPLICATION);
+        wc.hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_QILD2D)); // https://learn.microsoft.com/en-us/windows/win32/menurc/using-icons
+        wc.hCursor = LoadCursor(hInstance, IDC_ARROW);
         wc.lpszClassName = TEXT("WndLimitPeriodText");
         if (!RegisterClass(&wc)) {
             MessageBox(NULL, TEXT("Call to RegisterClass failed!"), TEXT("量化正在学习"), NULL);
@@ -147,7 +150,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         wc.cbWndExtra = sizeof(LONG_PTR);
         wc.hInstance = hInstance;
         wc.hbrBackground = NULL;
-        wc.hCursor = LoadCursor(hInstance, IDI_APPLICATION);
+        wc.hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_QILD2D)); // https://learn.microsoft.com/en-us/windows/win32/menurc/using-icons
+        wc.hCursor = LoadCursor(hInstance, IDC_ARROW);
         wc.lpszClassName = TEXT("WndLimitPeriodTimeSharing");
         if (!RegisterClass(&wc)) {
             MessageBox(NULL, TEXT("Call to RegisterClass failed!"), TEXT("量化正在学习"), NULL);
@@ -161,7 +165,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         wc.cbWndExtra = sizeof(LONG_PTR);
         wc.hInstance = hInstance;
         wc.hbrBackground = NULL;
-        wc.hCursor = LoadCursor(hInstance, IDI_APPLICATION);
+        wc.hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_QILD2D)); // https://learn.microsoft.com/en-us/windows/win32/menurc/using-icons
+        wc.hCursor = LoadCursor(hInstance, IDC_ARROW);
         wc.lpszClassName = TEXT("WndAbout");
         if (!RegisterClass(&wc)) {
             MessageBox(NULL, TEXT("Call to RegisterClass failed!"), TEXT("量化正在学习"), NULL);
