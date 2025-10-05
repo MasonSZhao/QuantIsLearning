@@ -1,4 +1,6 @@
-﻿#include "resource.h"
+﻿// Copyright (c) 2025-present Mason Zhao MasonSZhao@qq.com
+
+#include "resource.h"
 
 /////////////////////////////////////////////////////////////////////////////
 //

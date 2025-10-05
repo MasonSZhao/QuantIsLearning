@@ -204,14 +204,14 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     {
         HMENU hMenuReviewLimitPeriod = CreateMenu();
         AppendMenu(hMenuReview, MF_POPUP, (UINT)hMenuReviewLimitPeriod, TEXT("时序-造板连板周期(&L)"));
+        AppendMenu(hMenuReviewLimitPeriod, MF_STRING, WNDMAIN_HMENU_REVIEW_LIMITPERIOD300TIMESHARING, TEXT("创业板 分时对比"));
         AppendMenu(hMenuReviewLimitPeriod, MF_STRING, WNDMAIN_HMENU_REVIEW_LIMITPERIOD300DESCRIPTION, TEXT("创业板 文字简述"));
-        AppendMenu(hMenuReviewLimitPeriod, MF_STRING, WNDMAIN_HMENU_REVIEW_LIMITPERIOD300TIMESHARING, TEXT("创业板 分时叠加"));
+        AppendMenu(hMenuReviewLimitPeriod, MF_STRING | MF_DISABLED, WNDMAIN_HMENU_REVIEW_LIMITPERIOD688TIMESHARING, TEXT("科创板 分时对比"));
         AppendMenu(hMenuReviewLimitPeriod, MF_STRING | MF_DISABLED, WNDMAIN_HMENU_REVIEW_LIMITPERIOD688DESCRIPTION, TEXT("科创板 文字简述"));
-        AppendMenu(hMenuReviewLimitPeriod, MF_STRING | MF_DISABLED, WNDMAIN_HMENU_REVIEW_LIMITPERIOD688TIMESHARING, TEXT("科创板 分时叠加"));
+        AppendMenu(hMenuReviewLimitPeriod, MF_STRING | MF_DISABLED, WNDMAIN_HMENU_REVIEW_LIMITPERIODBJTIMESHARING, TEXT("北交所 分时对比"));
         AppendMenu(hMenuReviewLimitPeriod, MF_STRING | MF_DISABLED, WNDMAIN_HMENU_REVIEW_LIMITPERIODBJDESCRIPTION, TEXT("北交所 文字简述"));
-        AppendMenu(hMenuReviewLimitPeriod, MF_STRING | MF_DISABLED, WNDMAIN_HMENU_REVIEW_LIMITPERIODBJTIMESHARING, TEXT("北交所 分时叠加"));
+        AppendMenu(hMenuReviewLimitPeriod, MF_STRING | MF_DISABLED, WNDMAIN_HMENU_REVIEW_LIMITPERIODSHSZTIMESHARING, TEXT("主板 分时对比"));
         AppendMenu(hMenuReviewLimitPeriod, MF_STRING | MF_DISABLED, WNDMAIN_HMENU_REVIEW_LIMITPERIODSHSZDESCRIPTION, TEXT("主板 文字简述"));
-        AppendMenu(hMenuReviewLimitPeriod, MF_STRING | MF_DISABLED, WNDMAIN_HMENU_REVIEW_LIMITPERIODSHSZTIMESHARING, TEXT("主板 分时叠加"));
         HMENU hMenuReviewConceptPeriod = CreateMenu();
         AppendMenu(hMenuReview, MF_STRING | MF_DISABLED, (UINT)hMenuReviewConceptPeriod, TEXT("时序-题材周期(&C)"));
         AppendMenu(hMenuReview, MF_SEPARATOR, 0, NULL);

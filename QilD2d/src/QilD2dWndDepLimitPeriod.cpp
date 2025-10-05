@@ -403,6 +403,8 @@ LRESULT CALLBACK D2dWndDepLimitPeriodTimeSharing::WndProc(HWND hWnd, UINT uMsg, 
     }
     case WM_CLOSE: {
         QILD2D::D2dWndDepLimitPeriodTimeSharing* ptr = reinterpret_cast<QILD2D::D2dWndDepLimitPeriodTimeSharing*>(static_cast<LONG_PTR>(GetWindowLongPtr(hWnd, GWLP_USERDATA)));
+        for (auto& e : ptr->m_vecPDWriteTextLayout)
+            e->Release();
         QILD2D::D2dWndIndep::SafeRelease(&(ptr->m_D2dWndDep.m_pD2DSolidColorBrushGreen));
         QILD2D::D2dWndIndep::SafeRelease(&(ptr->m_D2dWndDep.m_pD2DSolidColorBrushRed));
         QILD2D::D2dWndIndep::SafeRelease(&(ptr->m_D2dWndDep.m_pD2DSolidColorBrushGray));
@@ -629,6 +631,34 @@ LRESULT CALLBACK D2dWndDepLimitPeriodTimeSharing::WndProc(HWND hWnd, UINT uMsg, 
                         });
                     }
                 }
+                {
+                    ptr->m_vecPDWriteTextLayout.resize(QILHOST::TimeSeriesCrossSector::s_vecDate.size());
+                    size_t idxPara { 0 };
+                    std::mutex mutIdx;
+                    std::vector<std::jthread> vecThread;
+                    for (auto idxThread { 0 }; idxThread < std::thread::hardware_concurrency() / 2; ++idxThread) {
+
+                        vecThread.emplace_back([&]() {
+                            while (true) {
+                                size_t idxLocal;
+                                {
+                                    std::unique_lock<std::mutex> lk(mutIdx);
+                                    idxLocal = idxPara;
+                                    if (!(idxLocal < QILHOST::TimeSeriesCrossSector::s_vecVecIntLimitUp.size())) {
+                                        break;
+                                    }
+                                    // std::cout << idxPara << std::endl;
+                                    ++idxPara;
+                                }
+
+                                std::wstring temp = std::to_wstring(QILHOST::TimeSeriesCrossSector::s_vecDate[idxLocal]);
+                                // D2D1_SIZE_F renderTargetSize = ptr->m_D2dWndDep.m_pD2D1HwndRenderTarget->GetSize();
+                                QILD2D::D2dWndIndep::s_pDWriteFactory->CreateTextLayout(temp.c_str(), temp.size(), QILD2D::D2dWndIndep::s_pDWriteTextFormat14, 0 /*可使用renderTargetSize*/, 0 /*可使用renderTargetSize*/, &ptr->m_vecPDWriteTextLayout[idxLocal]);
+                                ptr->m_vecPDWriteTextLayout[idxLocal]->SetWordWrapping(DWRITE_WORD_WRAPPING_NO_WRAP); // Set the word wrapping mode to DWRITE_WORD_WRAPPING_NO_WRAP
+                            }
+                        });
+                    }
+                }
             }
         }
         return 1;
@@ -650,11 +680,15 @@ LRESULT CALLBACK D2dWndDepLimitPeriodTimeSharing::WndProc(HWND hWnd, UINT uMsg, 
                 for (int32_t j { 0 }; j < ptr->m_nVert; ++j) {
                     if (QILHOST::TimeSeriesCrossSector::s_maxCount >= idxVScroll + j) {
                         if (ptr->m_vecVecVecD2dWndDepTimeSharing[idxHScroll + i].size() > QILHOST::TimeSeriesCrossSector::s_maxCount - idxVScroll - j) {
+
+                            ptr->m_D2dWndDep.m_pD2D1HwndRenderTarget->DrawTextLayout(D2D1::Point2F(0 + i * rc.right / ptr->m_nHorz, 0), ptr->m_vecPDWriteTextLayout[i + idxHScroll], ptr->m_D2dWndDep.m_pD2DSolidColorBrushBlack);
+
                             for (auto& op : ptr->m_vecVecVecD2dWndDepTimeSharing[idxHScroll + i][QILHOST::TimeSeriesCrossSector::s_maxCount - idxVScroll - j]) {
-                                op.m_xStart = 0 + i * (rc.right - rc.left) / ptr->m_nHorz;
-                                op.m_yStart = 0 + j * (rc.bottom - rc.top) / ptr->m_nVert;
-                                op.m_xWidth = (rc.right - rc.left) / ptr->m_nHorz;
-                                op.m_yHeight = (rc.bottom - rc.top) / ptr->m_nVert;
+                                op.m_xStart = 0 + i * rc.right / ptr->m_nHorz;
+
+                                op.m_yStart = QILD2D::D2dWndIndep::s_lineHeight14 + j * (rc.bottom - QILD2D::D2dWndIndep::s_lineHeight14) / ptr->m_nVert;
+                                op.m_xWidth = rc.right / ptr->m_nHorz;
+                                op.m_yHeight = (rc.bottom - QILD2D::D2dWndIndep::s_lineHeight14) / ptr->m_nVert;
                                 op.m_d2dWndDep = &(ptr->m_D2dWndDep);
                                 op.operator()();
                             }
