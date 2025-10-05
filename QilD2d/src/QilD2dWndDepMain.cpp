@@ -212,6 +212,44 @@ LRESULT CALLBACK D2dWndDepMain::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPA
             }
             break;
         }
+        case WNDMAIN_HMENU_SYS_SETDAYBAR: {
+            std::wstring ret {};
+            HRESULT hr;
+            IFileOpenDialog* pFileOpen;
+            // https://learn.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cocreateinstance
+            hr = CoCreateInstance(CLSID_FileOpenDialog, NULL, CLSCTX_ALL, IID_IFileOpenDialog, reinterpret_cast<void**>(&pFileOpen));
+            if (SUCCEEDED(hr)) {
+                hr = pFileOpen->Show(NULL); // Show the Open Dialog.
+                if (SUCCEEDED(hr)) {
+                    IShellItem* pItem;
+                    hr = pFileOpen->GetResult(&pItem);
+                    if (SUCCEEDED(hr)) {
+                        PWSTR /*Unicode UTF-16 WideChar*/ pszFilePath;
+                        hr = pItem->GetDisplayName(SIGDN_FILESYSPATH, &pszFilePath);
+                        if (SUCCEEDED(hr)) {
+                            ret = std::wstring { pszFilePath };
+                            CoTaskMemFree(pszFilePath);
+                        }
+                        pItem->Release();
+                    }
+                }
+                pFileOpen->Release();
+            }
+            if (ret.size() >= 12) {
+                std::wstring fileName = ret.substr(ret.size() - 12, 12);
+                if (0 == fileName.compare(L"sh999999.day")) {
+                    std::wstring wstrfolder = ret.substr(0, ret.size() - 12 - 8);
+                    USES_CONVERSION;
+                    std::string strFolder = W2A(wstrfolder.c_str());
+                    QILHOST::TD::FileVecDayBar::s_folderPath = strFolder;
+                    if (true) {
+                        WriteConsole(GetStdHandle(STD_OUTPUT_HANDLE), wstrfolder.c_str(), wstrfolder.size(), NULL, NULL);
+                    }
+                } else {
+                }
+            }
+            break;
+        }
         case WNDMAIN_HMENU_REVIEW_LIMITPERIOD300DESCRIPTION: {
             HWND hWndLimitPeriodText = CreateWindow(
                 TEXT("WndLimitPeriodText"), // 窗口类注册名称

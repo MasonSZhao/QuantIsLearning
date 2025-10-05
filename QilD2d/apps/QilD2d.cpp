@@ -174,7 +174,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     HMENU hMenuSys = CreateMenu();
     AppendMenu(hMenu, MF_POPUP, (UINT)hMenuSys, TEXT("系统(&S)"));
     {
-        AppendMenu(hMenuSys, MF_STRING | MF_DISABLED, WNDMAIN_HMENU_SYS_SETDAYBAR, TEXT("指定日线999999.day文件(&D)"));
+        AppendMenu(hMenuSys, MF_STRING, WNDMAIN_HMENU_SYS_SETDAYBAR, TEXT("指定日线999999.day文件(&D)"));
         AppendMenu(hMenuSys, MF_STRING, WNDMAIN_HMENU_SYS_SETMINUTEBAR, TEXT("指定分钟999999.lc1文件(&M)"));
         AppendMenu(hMenuSys, MF_SEPARATOR, 0, NULL);
         AppendMenu(hMenuSys, MF_STRING | MF_DISABLED, WNDMAIN_HMENU_SYS_SETMULTITHREAD, TEXT("指定多线程性能(&T)"));
