@@ -16,4 +16,7 @@ project ("QuantIsLearning")
 add_subdirectory ("QilHost")
 
 # Include sub-projects.
+add_subdirectory ("QilHttp")
+
+# Include sub-projects.
 add_subdirectory ("QilD2d")

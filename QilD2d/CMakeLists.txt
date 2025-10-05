@@ -1,6 +1,6 @@
 ﻿# Copyright (c) 2025-present Mason Zhao MasonSZhao@qq.com
 
-# CMakeList.txt : CMake project for QilHost, include source and define project specific logic here.
+# CMakeList.txt : CMake project for QilD2d, include source and define project specific logic here.
 
 # Set the C++ standard.
 set(CMAKE_CXX_STANDARD 20)
