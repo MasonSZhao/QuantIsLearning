@@ -661,6 +661,68 @@ LRESULT CALLBACK D2dWndDepLimitPeriodTimeSharing::WndProc(HWND hWnd, UINT uMsg, 
                 }
             }
         }
+        // MENU
+        HMENU hMenu = CreateMenu();
+        HMENU hMenuWnd = CreateMenu();
+        AppendMenu(hMenu, MF_POPUP | MF_CHECKED, (UINT)hMenuWnd, TEXT("窗口"));
+        {
+            HMENU hMenuWndR2 = CreateMenu();
+            AppendMenu(hMenuWnd, MF_POPUP, (UINT)hMenuWndR2, TEXT("2行"));
+            {
+                AppendMenu(hMenuWndR2, MF_STRING, WNDLIMITPERIODTIMESHARING_WND_R2C2, TEXT("2列"));
+                AppendMenu(hMenuWndR2, MF_STRING, WNDLIMITPERIODTIMESHARING_WND_R2C3, TEXT("3列"));
+                AppendMenu(hMenuWndR2, MF_STRING, WNDLIMITPERIODTIMESHARING_WND_R2C4, TEXT("4列"));
+                AppendMenu(hMenuWndR2, MF_STRING, WNDLIMITPERIODTIMESHARING_WND_R2C5, TEXT("5列"));
+                AppendMenu(hMenuWndR2, MF_STRING, WNDLIMITPERIODTIMESHARING_WND_R2C6, TEXT("6列"));
+                AppendMenu(hMenuWndR2, MF_STRING, WNDLIMITPERIODTIMESHARING_WND_R2C7, TEXT("7列"));
+                AppendMenu(hMenuWndR2, MF_STRING, WNDLIMITPERIODTIMESHARING_WND_R2C8, TEXT("8列"));
+            }
+            HMENU hMenuWndR3 = CreateMenu();
+            AppendMenu(hMenuWnd, MF_POPUP, (UINT)hMenuWndR3, TEXT("3行"));
+            {
+                AppendMenu(hMenuWndR3, MF_STRING, WNDLIMITPERIODTIMESHARING_WND_R3C2, TEXT("2列"));
+                AppendMenu(hMenuWndR3, MF_STRING, WNDLIMITPERIODTIMESHARING_WND_R3C3, TEXT("3列"));
+                AppendMenu(hMenuWndR3, MF_STRING, WNDLIMITPERIODTIMESHARING_WND_R3C4, TEXT("4列"));
+                AppendMenu(hMenuWndR3, MF_STRING, WNDLIMITPERIODTIMESHARING_WND_R3C5, TEXT("5列"));
+                AppendMenu(hMenuWndR3, MF_STRING, WNDLIMITPERIODTIMESHARING_WND_R3C6, TEXT("6列"));
+                AppendMenu(hMenuWndR3, MF_STRING, WNDLIMITPERIODTIMESHARING_WND_R3C7, TEXT("7列"));
+                AppendMenu(hMenuWndR3, MF_STRING, WNDLIMITPERIODTIMESHARING_WND_R3C8, TEXT("8列"));
+            }
+            HMENU hMenuWndR4 = CreateMenu();
+            AppendMenu(hMenuWnd, MF_POPUP, (UINT)hMenuWndR4, TEXT("4行"));
+            {
+                AppendMenu(hMenuWndR4, MF_STRING, WNDLIMITPERIODTIMESHARING_WND_R4C2, TEXT("2列"));
+                AppendMenu(hMenuWndR4, MF_STRING, WNDLIMITPERIODTIMESHARING_WND_R4C3, TEXT("3列"));
+                AppendMenu(hMenuWndR4, MF_STRING, WNDLIMITPERIODTIMESHARING_WND_R4C4, TEXT("4列"));
+                AppendMenu(hMenuWndR4, MF_STRING, WNDLIMITPERIODTIMESHARING_WND_R4C5, TEXT("5列"));
+                AppendMenu(hMenuWndR4, MF_STRING, WNDLIMITPERIODTIMESHARING_WND_R4C6, TEXT("6列"));
+                AppendMenu(hMenuWndR4, MF_STRING, WNDLIMITPERIODTIMESHARING_WND_R4C7, TEXT("7列"));
+                AppendMenu(hMenuWndR4, MF_STRING, WNDLIMITPERIODTIMESHARING_WND_R4C8, TEXT("8列"));
+            }
+            HMENU hMenuWndR5 = CreateMenu();
+            AppendMenu(hMenuWnd, MF_POPUP, (UINT)hMenuWndR5, TEXT("5行"));
+            {
+                AppendMenu(hMenuWndR5, MF_STRING, WNDLIMITPERIODTIMESHARING_WND_R5C2, TEXT("2列"));
+                AppendMenu(hMenuWndR5, MF_STRING, WNDLIMITPERIODTIMESHARING_WND_R5C3, TEXT("3列"));
+                AppendMenu(hMenuWndR5, MF_STRING, WNDLIMITPERIODTIMESHARING_WND_R5C4, TEXT("4列"));
+                AppendMenu(hMenuWndR5, MF_STRING, WNDLIMITPERIODTIMESHARING_WND_R5C5, TEXT("5列"));
+                AppendMenu(hMenuWndR5, MF_STRING, WNDLIMITPERIODTIMESHARING_WND_R5C6, TEXT("6列"));
+                AppendMenu(hMenuWndR5, MF_STRING, WNDLIMITPERIODTIMESHARING_WND_R5C7, TEXT("7列"));
+                AppendMenu(hMenuWndR5, MF_STRING, WNDLIMITPERIODTIMESHARING_WND_R5C8, TEXT("8列"));
+            }
+            HMENU hMenuWndR6 = CreateMenu();
+            AppendMenu(hMenuWnd, MF_POPUP, (UINT)hMenuWndR6, TEXT("6行"));
+            {
+                AppendMenu(hMenuWndR6, MF_STRING, WNDLIMITPERIODTIMESHARING_WND_R6C2, TEXT("2列"));
+                AppendMenu(hMenuWndR6, MF_STRING, WNDLIMITPERIODTIMESHARING_WND_R6C3, TEXT("3列"));
+                AppendMenu(hMenuWndR6, MF_STRING, WNDLIMITPERIODTIMESHARING_WND_R6C4, TEXT("4列"));
+                AppendMenu(hMenuWndR6, MF_STRING, WNDLIMITPERIODTIMESHARING_WND_R6C5, TEXT("5列"));
+                AppendMenu(hMenuWndR6, MF_STRING, WNDLIMITPERIODTIMESHARING_WND_R6C6, TEXT("6列"));
+                AppendMenu(hMenuWndR6, MF_STRING, WNDLIMITPERIODTIMESHARING_WND_R6C7, TEXT("7列"));
+                AppendMenu(hMenuWndR6, MF_STRING, WNDLIMITPERIODTIMESHARING_WND_R6C8, TEXT("8列"));
+            }
+        }
+        SetMenu(hWnd, hMenu);
         return 1;
     }
     case WM_PAINT: {
@@ -870,6 +932,231 @@ LRESULT CALLBACK D2dWndDepLimitPeriodTimeSharing::WndProc(HWND hWnd, UINT uMsg, 
         SetScrollInfo(hWnd, SB_VERT, &si, TRUE);
         GetScrollInfo(hWnd, SB_VERT, &si);
         InvalidateRect(hWnd, NULL, FALSE);
+        return 0;
+    }
+    case WM_COMMAND: {
+        QILD2D::D2dWndDepLimitPeriodTimeSharing* ptr = reinterpret_cast<QILD2D::D2dWndDepLimitPeriodTimeSharing*>(static_cast<LONG_PTR>(GetWindowLongPtr(hWnd, GWLP_USERDATA)));
+        auto hWndCtrl = lParam; // 发送WM_COMMAND的子窗口句柄
+        auto wNotifyCode = HIWORD(wParam); // 菜单消息的通知码为0，加速键消息的通知码为1。
+        auto wID = LOWORD(wParam);
+        switch (wID) {
+        case WNDLIMITPERIODTIMESHARING_WND_R2C2: {
+            ptr->m_nHorz = 2;
+            ptr->m_nVert = 2;
+            if (false) {
+                HMENU hMenu = GetMenu(hWnd);
+                CheckMenuItem(hMenu, WNDLIMITPERIODTIMESHARING_WND_R2C2, MF_BYCOMMAND | MF_CHECKED);
+            }
+            InvalidateRect(hWnd, NULL, FALSE);
+            break;
+        }
+        case WNDLIMITPERIODTIMESHARING_WND_R2C3: {
+            ptr->m_nHorz = 3;
+            ptr->m_nVert = 2;
+            InvalidateRect(hWnd, NULL, FALSE);
+            break;
+        }
+        case WNDLIMITPERIODTIMESHARING_WND_R2C4: {
+            ptr->m_nHorz = 4;
+            ptr->m_nVert = 2;
+            InvalidateRect(hWnd, NULL, FALSE);
+            break;
+        }
+        case WNDLIMITPERIODTIMESHARING_WND_R2C5: {
+            ptr->m_nHorz = 5;
+            ptr->m_nVert = 2;
+            InvalidateRect(hWnd, NULL, FALSE);
+            break;
+        }
+        case WNDLIMITPERIODTIMESHARING_WND_R2C6: {
+            ptr->m_nHorz = 6;
+            ptr->m_nVert = 2;
+            InvalidateRect(hWnd, NULL, FALSE);
+            break;
+        }
+        case WNDLIMITPERIODTIMESHARING_WND_R2C7: {
+            ptr->m_nHorz = 7;
+            ptr->m_nVert = 2;
+            InvalidateRect(hWnd, NULL, FALSE);
+            break;
+        }
+        case WNDLIMITPERIODTIMESHARING_WND_R2C8: {
+            ptr->m_nHorz = 8;
+            ptr->m_nVert = 2;
+            InvalidateRect(hWnd, NULL, FALSE);
+            break;
+        }
+        case WNDLIMITPERIODTIMESHARING_WND_R3C2: {
+            ptr->m_nHorz = 2;
+            ptr->m_nVert = 3;
+            InvalidateRect(hWnd, NULL, FALSE);
+            break;
+        }
+        case WNDLIMITPERIODTIMESHARING_WND_R3C3: {
+            ptr->m_nHorz = 3;
+            ptr->m_nVert = 3;
+            InvalidateRect(hWnd, NULL, FALSE);
+            break;
+        }
+        case WNDLIMITPERIODTIMESHARING_WND_R3C4: {
+            ptr->m_nHorz = 4;
+            ptr->m_nVert = 3;
+            InvalidateRect(hWnd, NULL, FALSE);
+            break;
+        }
+        case WNDLIMITPERIODTIMESHARING_WND_R3C5: {
+            ptr->m_nHorz = 5;
+            ptr->m_nVert = 3;
+            InvalidateRect(hWnd, NULL, FALSE);
+            break;
+        }
+        case WNDLIMITPERIODTIMESHARING_WND_R3C6: {
+            ptr->m_nHorz = 6;
+            ptr->m_nVert = 3;
+            InvalidateRect(hWnd, NULL, FALSE);
+            break;
+        }
+        case WNDLIMITPERIODTIMESHARING_WND_R3C7: {
+            ptr->m_nHorz = 7;
+            ptr->m_nVert = 3;
+            InvalidateRect(hWnd, NULL, FALSE);
+            break;
+        }
+        case WNDLIMITPERIODTIMESHARING_WND_R3C8: {
+            ptr->m_nHorz = 8;
+            ptr->m_nVert = 3;
+            InvalidateRect(hWnd, NULL, FALSE);
+            break;
+        }
+        case WNDLIMITPERIODTIMESHARING_WND_R4C2: {
+            ptr->m_nHorz = 2;
+            ptr->m_nVert = 4;
+            InvalidateRect(hWnd, NULL, FALSE);
+            break;
+        }
+        case WNDLIMITPERIODTIMESHARING_WND_R4C3: {
+            ptr->m_nHorz = 3;
+            ptr->m_nVert = 4;
+            InvalidateRect(hWnd, NULL, FALSE);
+            break;
+        }
+        case WNDLIMITPERIODTIMESHARING_WND_R4C4: {
+            ptr->m_nHorz = 4;
+            ptr->m_nVert = 4;
+            InvalidateRect(hWnd, NULL, FALSE);
+            break;
+        }
+        case WNDLIMITPERIODTIMESHARING_WND_R4C5: {
+            ptr->m_nHorz = 5;
+            ptr->m_nVert = 4;
+            InvalidateRect(hWnd, NULL, FALSE);
+            break;
+        }
+        case WNDLIMITPERIODTIMESHARING_WND_R4C6: {
+            ptr->m_nHorz = 6;
+            ptr->m_nVert = 4;
+            InvalidateRect(hWnd, NULL, FALSE);
+            break;
+        }
+        case WNDLIMITPERIODTIMESHARING_WND_R4C7: {
+            ptr->m_nHorz = 7;
+            ptr->m_nVert = 4;
+            InvalidateRect(hWnd, NULL, FALSE);
+            break;
+        }
+        case WNDLIMITPERIODTIMESHARING_WND_R4C8: {
+            ptr->m_nHorz = 8;
+            ptr->m_nVert = 4;
+            InvalidateRect(hWnd, NULL, FALSE);
+            break;
+        }
+        case WNDLIMITPERIODTIMESHARING_WND_R5C2: {
+            ptr->m_nHorz = 2;
+            ptr->m_nVert = 5;
+            InvalidateRect(hWnd, NULL, FALSE);
+            break;
+        }
+        case WNDLIMITPERIODTIMESHARING_WND_R5C3: {
+            ptr->m_nHorz = 3;
+            ptr->m_nVert = 5;
+            InvalidateRect(hWnd, NULL, FALSE);
+            break;
+        }
+        case WNDLIMITPERIODTIMESHARING_WND_R5C4: {
+            ptr->m_nHorz = 4;
+            ptr->m_nVert = 5;
+            InvalidateRect(hWnd, NULL, FALSE);
+            break;
+        }
+        case WNDLIMITPERIODTIMESHARING_WND_R5C5: {
+            ptr->m_nHorz = 5;
+            ptr->m_nVert = 5;
+            InvalidateRect(hWnd, NULL, FALSE);
+            break;
+        }
+        case WNDLIMITPERIODTIMESHARING_WND_R5C6: {
+            ptr->m_nHorz = 6;
+            ptr->m_nVert = 5;
+            InvalidateRect(hWnd, NULL, FALSE);
+            break;
+        }
+        case WNDLIMITPERIODTIMESHARING_WND_R5C7: {
+            ptr->m_nHorz = 7;
+            ptr->m_nVert = 5;
+            InvalidateRect(hWnd, NULL, FALSE);
+            break;
+        }
+        case WNDLIMITPERIODTIMESHARING_WND_R5C8: {
+            ptr->m_nHorz = 8;
+            ptr->m_nVert = 5;
+            InvalidateRect(hWnd, NULL, FALSE);
+            break;
+        }
+        case WNDLIMITPERIODTIMESHARING_WND_R6C2: {
+            ptr->m_nHorz = 2;
+            ptr->m_nVert = 6;
+            InvalidateRect(hWnd, NULL, FALSE);
+            break;
+        }
+        case WNDLIMITPERIODTIMESHARING_WND_R6C3: {
+            ptr->m_nHorz = 3;
+            ptr->m_nVert = 6;
+            InvalidateRect(hWnd, NULL, FALSE);
+            break;
+        }
+        case WNDLIMITPERIODTIMESHARING_WND_R6C4: {
+            ptr->m_nHorz = 4;
+            ptr->m_nVert = 6;
+            InvalidateRect(hWnd, NULL, FALSE);
+            break;
+        }
+        case WNDLIMITPERIODTIMESHARING_WND_R6C5: {
+            ptr->m_nHorz = 5;
+            ptr->m_nVert = 6;
+            InvalidateRect(hWnd, NULL, FALSE);
+            break;
+        }
+        case WNDLIMITPERIODTIMESHARING_WND_R6C6: {
+            ptr->m_nHorz = 6;
+            ptr->m_nVert = 6;
+            InvalidateRect(hWnd, NULL, FALSE);
+            break;
+        }
+        case WNDLIMITPERIODTIMESHARING_WND_R6C7: {
+            ptr->m_nHorz = 7;
+            ptr->m_nVert = 6;
+            InvalidateRect(hWnd, NULL, FALSE);
+            break;
+        }
+        case WNDLIMITPERIODTIMESHARING_WND_R6C8: {
+            ptr->m_nHorz = 8;
+            ptr->m_nVert = 6;
+            InvalidateRect(hWnd, NULL, FALSE);
+            break;
+        }
+        default:
+            break;
+        }
         return 0;
     }
     default:
