@@ -5,10 +5,6 @@
 #include "..\include\QilHostSecurityS.h"
 #include <fstream>
 
-#define SPDLOG_ACTIVE_LEVEL SPDLOG_LEVEL_TRACE // spdlog #define should be in front of SPD #include.
-
-#include <spdlog/spdlog.h> // spdlog #define should be in front of SPD #include.
-
 namespace QILHOST {
 
 namespace TD {
@@ -177,7 +173,7 @@ namespace TD {
         return vecIntMinuteBar;
     }
 
-    std::vector<QILHOST::TD::FltMinuteBar> FileVecMinuteBar::fltDate(const char* exCode, const size_t readCount, const int32_t readFromDate, const size_t guessFileCount, const ptrdiff_t guessFileIdx /*, const bool readPreClose*/)
+    std::vector<QILHOST::TD::FltMinuteBar> FileVecMinuteBar::fltDate(const char* exCode, const int32_t readDate)
     {
         std::vector<QILHOST::TD::FltMinuteBar> vecFltMinuteBar;
         {
@@ -186,43 +182,26 @@ namespace TD {
             if (ifs.is_open()) {
                 ifs.seekg(0, std::ios::end);
                 std::streampos fileSize = ifs.tellg();
-                size_t fileCount = fileSize / sizeof(QILHOST::TD::FltMinuteBar);
-                bool needReSearch { true };
-                if ((guessFileCount == fileCount) && (guessFileIdx > 0)) {
-                    needReSearch = false;
+                size_t readSize = 240 * sizeof(QILHOST::TD::FltMinuteBar);
+                // 从尾读取
+                if (false) {
                 }
-                if (false == needReSearch) {
-                    ifs.seekg(guessFileIdx * sizeof(QILHOST::TD::FltMinuteBar), std::ios::beg);
-                    size_t leftCount = fileCount - guessFileIdx;
-                    if (leftCount >= readCount) {
-                        vecFltMinuteBar.resize(readCount);
-                        ifs.read(reinterpret_cast<char*>(&vecFltMinuteBar[0]), readCount * sizeof(QILHOST::TD::FltMinuteBar));
-                    } else {
-                        vecFltMinuteBar.resize(leftCount);
-                        ifs.read(reinterpret_cast<char*>(&vecFltMinuteBar[0]), leftCount * sizeof(QILHOST::TD::FltMinuteBar));
-                    }
-                } else {
-                    SPDLOG_TRACE(std::string { exCode } + " FileVecMinuteBar " + std::to_string(readFromDate) + " do need research.");
-                    ifs.seekg(0, std::ios::beg);
-                    size_t leftCount = fileCount;
-                    while (!ifs.eof()) {
-                        QILHOST::TD::FltMinuteBar temp;
-                        ifs >> temp;
-                        --leftCount;
-                        if (temp.uintDate() != readFromDate) {
+                // 从头读取
+                else {
+                    if (fileSize >= readSize) {
+                        ifs.seekg(0, std::ios::beg);
+                        size_t fileCount = fileSize / sizeof(QILHOST::TD::FltMinuteBar);
+                        for (size_t i { 0 }; i < fileCount / 240; ++i) {
+                            QILHOST::TD::FltMinuteBar temp;
+                            ifs >> temp;
+                            if (readDate == temp.uintDate()) {
+                                vecFltMinuteBar.push_back(temp);
+                                vecFltMinuteBar.resize(240);
+                                ifs.read(reinterpret_cast<char*>(&vecFltMinuteBar[1]), 239 * sizeof(QILHOST::TD::FltMinuteBar));
+                                break;
+                            }
                             ifs.ignore(239 * sizeof(QILHOST::TD::FltMinuteBar));
-                            leftCount -= 239;
-                        } else {
-                            vecFltMinuteBar.push_back(temp);
-                            break;
                         }
-                    }
-                    if (leftCount >= readCount - 1) {
-                        vecFltMinuteBar.resize(vecFltMinuteBar.size() + readCount - 1);
-                        ifs.read(reinterpret_cast<char*>(&vecFltMinuteBar[1]), (readCount - 1) * sizeof(QILHOST::TD::FltMinuteBar));
-                    } else {
-                        vecFltMinuteBar.resize(vecFltMinuteBar.size() + leftCount);
-                        ifs.read(reinterpret_cast<char*>(&vecFltMinuteBar[1]), leftCount * sizeof(QILHOST::TD::FltMinuteBar));
                     }
                 }
             } else {
@@ -233,9 +212,9 @@ namespace TD {
         return vecFltMinuteBar;
     }
 
-    std::vector<QILHOST::IntMinuteBar> FileVecMinuteBar::int3264Date(const char* exCode, const size_t readCount, const int32_t readFromDate, const size_t guessFileCount, const ptrdiff_t guessFileIdx /*, const bool readPreClose*/)
+    std::vector<QILHOST::IntMinuteBar> FileVecMinuteBar::int3264Date(const char* exCode, const int32_t readDate)
     {
-        std::vector<QILHOST::TD::FltMinuteBar> vecFltMinuteBar { fltDate(exCode, readCount, readFromDate, guessFileCount, guessFileIdx /*, const bool readPreClose*/) };
+        std::vector<QILHOST::TD::FltMinuteBar> vecFltMinuteBar { fltDate(exCode, readDate) };
         std::vector<QILHOST::IntMinuteBar> vecIntMinuteBar;
         vecIntMinuteBar.reserve(vecFltMinuteBar.size());
         for (const auto& e : vecFltMinuteBar) {
@@ -253,15 +232,11 @@ namespace TD {
         return vecIntMinuteBar;
     }
 
-    std::vector<int32_t> FileVecMinuteBar::s_vecDate1999999;
-
-    std::unordered_map<int32_t, size_t> FileVecMinuteBar::s_lutDate1999999;
-
-    void FileVecMinuteBar::lut1999999()
+    std::vector<std::vector<QILHOST::TD::FltMinuteBar>> FileVecMinuteBar::fltSetDate(const char* exCode, std::set<int32_t> readSetDate)
     {
-        std::vector<QILHOST::TD::FltMinuteBar> vecFltMinuteBar;
+        std::vector<std::vector<QILHOST::TD::FltMinuteBar>> vecVecFltMinuteBar;
         {
-            std::string filePath { QILHOST::TD::FileVecMinuteBar::getFilePath("1999999") };
+            std::string filePath { QILHOST::TD::FileVecMinuteBar::getFilePath(exCode) };
             std::ifstream ifs(filePath, std::ios::binary);
             if (ifs.is_open()) {
                 ifs.seekg(0, std::ios::end);
@@ -275,15 +250,23 @@ namespace TD {
                     if (fileSize >= readSize) {
                         ifs.seekg(0, std::ios::beg);
                         size_t fileCount = fileSize / sizeof(QILHOST::TD::FltMinuteBar);
-                        vecFltMinuteBar.reserve(fileCount);
-                        // BUG: The 'while' code will read the last QILHOST::TD::FltMinuteBar twice, then trigger ifs.tellg() == -1 which means ifs.eof().
-                        // while (!ifs.eof()) {
-                        // FIX:
                         for (size_t i { 0 }; i < fileCount / 240; ++i) {
                             QILHOST::TD::FltMinuteBar temp;
                             ifs >> temp;
-                            vecFltMinuteBar.push_back(temp);
-                            ifs.ignore(239 * sizeof(QILHOST::TD::FltMinuteBar));
+                            auto it = readSetDate.find(temp.uintDate());
+                            if (it != readSetDate.end()) {
+                                std::vector<QILHOST::TD::FltMinuteBar> vecFltMinuteBar;
+                                vecFltMinuteBar.push_back(temp);
+                                vecFltMinuteBar.resize(240);
+                                ifs.read(reinterpret_cast<char*>(&vecFltMinuteBar[1]), 239 * sizeof(QILHOST::TD::FltMinuteBar));
+                                vecVecFltMinuteBar.push_back(vecFltMinuteBar);
+                                readSetDate.erase(it);
+                                if (readSetDate.empty()) {
+                                    break;
+                                }
+                            } else {
+                                ifs.ignore(239 * sizeof(QILHOST::TD::FltMinuteBar));
+                            }
                         }
                     }
                 }
@@ -292,15 +275,67 @@ namespace TD {
             }
             ifs.close();
         }
+        return vecVecFltMinuteBar;
+    }
 
-        FileVecMinuteBar::s_vecDate1999999.reserve(vecFltMinuteBar.size());
-
-        for (const auto& e : vecFltMinuteBar)
-            FileVecMinuteBar::s_vecDate1999999.push_back(e.uintDate());
-
-        for (size_t i { 0 }; i < FileVecMinuteBar::s_vecDate1999999.size(); ++i) {
-            FileVecMinuteBar::s_lutDate1999999.insert(std::unordered_map<int32_t, size_t>::value_type(FileVecMinuteBar::s_vecDate1999999[i], i));
+    std::vector<std::vector<QILHOST::IntMinuteBar>> FileVecMinuteBar::int3264SetDate(const char* exCode, std::set<int32_t> readSetDate)
+    {
+        std::vector<std::vector<QILHOST::IntMinuteBar>> vecVecIntMinuteBar;
+        {
+            std::string filePath { QILHOST::TD::FileVecMinuteBar::getFilePath(exCode) };
+            std::ifstream ifs(filePath, std::ios::binary);
+            if (ifs.is_open()) {
+                ifs.seekg(0, std::ios::end);
+                std::streampos fileSize = ifs.tellg();
+                size_t readSize = 240 * sizeof(QILHOST::TD::FltMinuteBar);
+                // 从尾读取
+                if (false) {
+                }
+                // 从头读取
+                else {
+                    if (fileSize >= readSize) {
+                        ifs.seekg(0, std::ios::beg);
+                        size_t fileCount = fileSize / sizeof(QILHOST::TD::FltMinuteBar);
+                        for (size_t i { 0 }; i < fileCount / 240; ++i) {
+                            QILHOST::TD::FltMinuteBar temp;
+                            ifs >> temp;
+                            auto it = readSetDate.find(temp.uintDate());
+                            if (it != readSetDate.end()) {
+                                std::vector<QILHOST::TD::FltMinuteBar> vecFltMinuteBar;
+                                vecFltMinuteBar.push_back(temp);
+                                vecFltMinuteBar.resize(240);
+                                ifs.read(reinterpret_cast<char*>(&vecFltMinuteBar[1]), 239 * sizeof(QILHOST::TD::FltMinuteBar));
+                                std::vector<QILHOST::IntMinuteBar> vecIntMinuteBar;
+                                vecIntMinuteBar.reserve(vecFltMinuteBar.size());
+                                for (const auto& e : vecFltMinuteBar) {
+                                    QILHOST::IntMinuteBar tempIntMinuteBar;
+                                    tempIntMinuteBar.m_date = static_cast<int32_t>(e.uintDate());
+                                    tempIntMinuteBar.m_time = static_cast<int32_t>(e.uintTime());
+                                    tempIntMinuteBar.m_op = static_cast<int32_t>(e.m_op * 100);
+                                    tempIntMinuteBar.m_hi = static_cast<int32_t>(e.m_hi * 100);
+                                    tempIntMinuteBar.m_lo = static_cast<int32_t>(e.m_lo * 100);
+                                    tempIntMinuteBar.m_cl = static_cast<int32_t>(e.m_cl * 100);
+                                    tempIntMinuteBar.m_amo = static_cast<int64_t>(e.m_amo * 100);
+                                    tempIntMinuteBar.m_vol = static_cast<int64_t>(e.m_vol);
+                                    vecIntMinuteBar.push_back(tempIntMinuteBar);
+                                }
+                                vecVecIntMinuteBar.push_back(vecIntMinuteBar);
+                                readSetDate.erase(it);
+                                if (readSetDate.empty()) {
+                                    break;
+                                }
+                            } else {
+                                ifs.ignore(239 * sizeof(QILHOST::TD::FltMinuteBar));
+                            }
+                        }
+                    }
+                }
+            } else {
+                std::cerr << "Failed to open file: " << filePath << std::endl;
+            }
+            ifs.close();
         }
+        return vecVecIntMinuteBar;
     }
 
     std::string FileVecExCode360::s_filePathSz { "C:/new_tdx/T0002/hq_cache/szs.tnf" };

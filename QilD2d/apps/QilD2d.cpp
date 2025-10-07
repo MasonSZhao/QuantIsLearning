@@ -38,11 +38,11 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     spdlog::set_level(spdlog::level::info);
 
     if (false) {
-        std::wstring msg { L"QIL启动。" };
+        std::wstring msg { L"QilD2d 启动。" };
         USES_CONVERSION;
         SPDLOG_INFO(W2A(msg.c_str()));
     } else {
-        SPDLOG_INFO("QIL starts.");
+        SPDLOG_INFO(std::string { "QilD2d starts." });
     }
 
     UNREFERENCED_PARAMETER(hPrevInstance);
@@ -276,11 +276,11 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     QILD2D::D2dWndIndep::SafeRelease(&QILD2D::D2dWndIndep::s_pD2D1Factory);
 
     if (false) {
-        std::wstring msg { L"QIL退出。" };
+        std::wstring msg { L"QilD2d 退出。" };
         USES_CONVERSION;
         SPDLOG_INFO(W2A(msg.c_str()));
     } else {
-        SPDLOG_INFO("QIL ends.");
+        SPDLOG_INFO(std::string { "QilD2d exits." });
     }
 
     {

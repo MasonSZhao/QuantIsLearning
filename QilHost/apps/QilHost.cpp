@@ -48,14 +48,9 @@ int main()
         }
     }
 
-    SPDLOG_INFO(std::string { "QIL启动。" });
+    SPDLOG_INFO(std::string { "QilHost starts." });
 
-    if (true) {
-        QILHOST::TD::FileVecMinuteBar::lut1999999();
-        std::vector<QILHOST::TD::FltMinuteBar> vecFltMinuteBar = QILHOST::TD::FileVecMinuteBar::fltDate("0399006", 480, QILHOST::TD::FileVecMinuteBar::s_vecDate1999999.back());
-    }
-
-    SPDLOG_INFO(std::string { "QIL退出。" });
+    SPDLOG_INFO(std::string { "QilHost exits." });
 
     {
         // 清理并释放资源

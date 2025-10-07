@@ -440,7 +440,6 @@ LRESULT CALLBACK D2dWndDepLimitPeriodTimeSharing::WndProc(HWND hWnd, UINT uMsg, 
         if (SUCCEEDED(hr)) {
             {
                 {
-                    QILHOST::TD::FileVecMinuteBar::lut1999999();
                     int32_t startDate;
                     {
                         std::vector<QILHOST::IntMinuteBar> vecIntMinuteBar { QILHOST::TD::FileVecMinuteBar::int3264("1999999", 1, false) };
@@ -581,36 +580,8 @@ LRESULT CALLBACK D2dWndDepLimitPeriodTimeSharing::WndProc(HWND hWnd, UINT uMsg, 
                                     // std::cout << idxPara << std::endl;
                                     ++idxPara;
                                 }
-                                ptrdiff_t idxDate = -1;
-                                if (QILHOST::TD::FileVecMinuteBar::s_lutDate1999999.end() != QILHOST::TD::FileVecMinuteBar::s_lutDate1999999.find(QILHOST::TimeSeriesCrossSector::s_vecDate[idxLocal])) {
-                                    // found
-                                    idxDate = QILHOST::TD::FileVecMinuteBar::s_lutDate1999999[QILHOST::TimeSeriesCrossSector::s_vecDate[idxLocal]];
-                                } else {
-                                    // not found
-                                }
                                 for (const auto& e : QILHOST::TimeSeriesCrossSector::s_vecVecIntLimitUp[idxLocal]) {
-                                    std::vector<QILHOST::IntMinuteBar> vecIntMinuteBar;
-                                    if (idxDate >= 0) {
-                                        if (false) {
-                                            std::wstring str { L"found\n" };
-                                            WriteConsole(GetStdHandle(STD_OUTPUT_HANDLE), str.c_str(), str.size(), NULL, NULL);
-                                        }
-                                        vecIntMinuteBar = QILHOST::TD::FileVecMinuteBar::int3264Date(
-                                            QILHOST::VecExCode360::s_vecExCode[e.m_idxVecExCode].data(),
-                                            240,
-                                            QILHOST::TimeSeriesCrossSector::s_vecDate[idxLocal],
-                                            QILHOST::TD::FileVecMinuteBar::s_vecDate1999999.size() * 240,
-                                            QILHOST::TD::FileVecMinuteBar::s_lutDate1999999[QILHOST::TimeSeriesCrossSector::s_vecDate[idxLocal]] * 240);
-                                    } else {
-                                        if (false) {
-                                            std::wstring str { L"not found\n" };
-                                            WriteConsole(GetStdHandle(STD_OUTPUT_HANDLE), str.c_str(), str.size(), NULL, NULL);
-                                        }
-                                        vecIntMinuteBar = QILHOST::TD::FileVecMinuteBar::int3264Date(
-                                            QILHOST::VecExCode360::s_vecExCode[e.m_idxVecExCode].data(),
-                                            240,
-                                            QILHOST::TimeSeriesCrossSector::s_vecDate[idxLocal]);
-                                    }
+                                    std::vector<QILHOST::IntMinuteBar> vecIntMinuteBar { QILHOST::TD::FileVecMinuteBar::int3264Date(QILHOST::VecExCode360::s_vecExCode[e.m_idxVecExCode].data(), QILHOST::TimeSeriesCrossSector::s_vecDate[idxLocal]) };
                                     int64_t volMax = vecIntMinuteBar[0].m_vol;
                                     for (const auto& intMinuteBar : vecIntMinuteBar) {
                                         if (intMinuteBar.m_vol > volMax) {
@@ -650,7 +621,6 @@ LRESULT CALLBACK D2dWndDepLimitPeriodTimeSharing::WndProc(HWND hWnd, UINT uMsg, 
                                     // std::cout << idxPara << std::endl;
                                     ++idxPara;
                                 }
-
                                 std::wstring temp = std::to_wstring(QILHOST::TimeSeriesCrossSector::s_vecDate[idxLocal]);
                                 // D2D1_SIZE_F renderTargetSize = ptr->m_D2dWndDep.m_pD2D1HwndRenderTarget->GetSize();
                                 QILD2D::D2dWndIndep::s_pDWriteFactory->CreateTextLayout(temp.c_str(), temp.size(), QILD2D::D2dWndIndep::s_pDWriteTextFormat14, 0 /*可使用renderTargetSize*/, 0 /*可使用renderTargetSize*/, &ptr->m_vecPDWriteTextLayout[idxLocal]);

@@ -3,6 +3,8 @@
 #pragma once
 
 #include "QilHostSecurity.h"
+// #include <mutex>
+#include <set>
 #include <string>
 #include <unordered_map>
 #include <vector>
@@ -25,16 +27,49 @@ namespace TD {
      * @brief 读取单个分钟文件。
      */
     struct FileVecMinuteBar {
+        /////////////////////////////////////////////////////////////////////////////
+        //
+        // TODO
+        //
+        // Index Auto Cache
+        // Binary Search When Index Cache Doesn't Match
+        //
+
+        /////////////////////////////////////////////////////////////////////////////
+        //
+        // Path of Folder, File
+        //
         static std::string s_folderPath;
         static std::string getFilePath(const char* exCode);
+
+        /////////////////////////////////////////////////////////////////////////////
+        //
+        // Index Auto Cache
+        //
+        // static std::mutex s_mutCache;
+        // static std::set<size_t> s_setFileCount;
+        // static std::vector<std::unordered_map<int32_t, size_t>> s_veclutDate;
+
+        /////////////////////////////////////////////////////////////////////////////
+        //
+        // Read File
+        //
         static std::vector<QILHOST::TD::FltMinuteBar> flt(const char* exCode, const size_t readCount, const bool readFromBackNotFront);
         static std::vector<QILHOST::IntMinuteBar> int3264(const char* exCode, const size_t readCount, const bool readFromBackNotFront);
-        static std::vector<QILHOST::TD::FltMinuteBar> fltDate(const char* exCode, const size_t readCount, const int32_t readFromDate, const size_t guessFileCount = 0, const ptrdiff_t guessFileIdx = -1 /*, const bool readPreClose = true*/);
-        static std::vector<QILHOST::IntMinuteBar> int3264Date(const char* exCode, const size_t readCount, const int32_t readFromDate, const size_t guessFileCount = 0, const ptrdiff_t guessFileIdx = -1 /*, const bool readPreClose = true*/);
 
-        static std::vector<int32_t> s_vecDate1999999;
-        static std::unordered_map<int32_t, size_t> s_lutDate1999999;
-        static void lut1999999();
+        /////////////////////////////////////////////////////////////////////////////
+        //
+        // Read Date
+        //
+        static std::vector<QILHOST::TD::FltMinuteBar> fltDate(const char* exCode, const int32_t readDate);
+        static std::vector<QILHOST::IntMinuteBar> int3264Date(const char* exCode, const int32_t readDate);
+
+        /////////////////////////////////////////////////////////////////////////////
+        //
+        // Read Set Date
+        //
+        static std::vector<std::vector<QILHOST::TD::FltMinuteBar>> fltSetDate(const char* exCode, std::set<int32_t> readSetDate);
+        static std::vector<std::vector<QILHOST::IntMinuteBar>> int3264SetDate(const char* exCode, std::set<int32_t> readSetDate);
     };
 
     /**
